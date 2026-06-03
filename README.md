@@ -28,6 +28,21 @@ Then invoke the skill you need from your agent:
 - `/dpia` for privacy impact assessment screening and drafting.
 - `/appsec-audit` for authorized source-aware AppSec audits and remediation-ready security reports.
 
+## Suggested Skill Run Order
+
+Use these as practical sequences, not rigid rules. Pick the path that matches the work in front of you.
+
+| Situation | Run these skills in order | Why |
+|---|---|---|
+| Designing a new product feature | `/frontend-design-system` -> `/database-schema-designer` -> `/data-map` -> `/appsec-audit` | Shape the UI and data model first, then identify personal-data flows and security risks before implementation hardens around bad assumptions. |
+| Building a database-heavy feature | `/database-schema-designer` -> `/performance-cost-audit` -> `/appsec-audit` | Start from workload and schema, then check query/cost shape and authorization or tenant-isolation risks. |
+| Making a dashboard, admin panel, or SaaS screen | `/frontend-design-system` -> `/performance-cost-audit` -> `/appsec-audit` | Design the interface, then check for over-fetching, request waterfalls, expensive loaders, and exposed privileged operations. |
+| Adding analytics, cookies, pixels, or tracking SDKs | `/data-map` -> `/cookie-consent-review` -> `/privacy-regime-review` | Inventory what is collected, verify consent/opt-out behavior, then review regime-specific obligations. |
+| Adding a vendor or subprocessors | `/data-map` -> `/vendor-dpa-review` -> `/privacy-regime-review` | Identify the data shared, review contract/transfer/security gaps, then map obligations by regime. |
+| Shipping AI, profiling, risk scoring, or sensitive-data processing | `/data-map` -> `/privacy-regime-review` -> `/dpia` -> `/appsec-audit` | Establish data flows and legal triggers, assess risks to people, then review technical controls. |
+| Before a release | `/performance-cost-audit` -> `/appsec-audit` -> `/privacy-regime-review` | Check hot-path cost/latency, security regressions, and privacy obligations before launch. Add `/dpia`, `/cookie-consent-review`, or `/vendor-dpa-review` when the release touches those areas. |
+| Responding to a suspected data leak or exposure | `/privacy-incident` -> `/data-map` -> `/appsec-audit` | Triage and preserve facts first, map affected data and systems, then find and fix the technical control failure. |
+
 ## Why These Skills Exist
 
 Coding agents are useful, but they fail in predictable ways:
