@@ -1,0 +1,4 @@
+interface:
+  display_name: "AppSec Audit"
+  short_description: "Audit authorized apps for security."
+  default_prompt: "Use $appsec-audit to perform an authorized, source-aware application security audit and produce scoped findings, safe validation notes, remediation guidance, and regression tests."

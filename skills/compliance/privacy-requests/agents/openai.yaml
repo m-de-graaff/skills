@@ -1,0 +1,4 @@
+interface:
+  display_name: "Privacy Requests"
+  short_description: "Design privacy rights workflows."
+  default_prompt: "Use $privacy-requests to design or review privacy request workflows for access, deletion, correction, portability, opt-out, consent withdrawal, and audit evidence."

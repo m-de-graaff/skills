@@ -1,0 +1,4 @@
+interface:
+  display_name: "Privacy Regime Review"
+  short_description: "Review privacy regimes and risks."
+  default_prompt: "Use $privacy-regime-review to review a product, policy, code path, vendor, data flow, or incident against applicable privacy regimes and produce findings plus remediation issues."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Privacy Incident"
+  short_description: "Triage personal-data incidents."
+  default_prompt: "Use $privacy-incident to triage a suspected personal-data incident, preserve evidence, assess affected data and people, and prepare escalation materials."

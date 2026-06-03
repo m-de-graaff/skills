@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vendor DPA Review"
+  short_description: "Review vendor privacy terms."
+  default_prompt: "Use $vendor-dpa-review to review a vendor, DPA, subprocessor list, transfer terms, security exhibit, or service-provider arrangement for privacy risk."

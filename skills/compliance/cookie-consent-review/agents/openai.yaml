@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cookie Consent Review"
+  short_description: "Review tracking and consent flows."
+  default_prompt: "Use $cookie-consent-review to inventory cookies, pixels, SDKs, analytics, ads, CMP behavior, opt-out signals, and consent or disclosure gaps."

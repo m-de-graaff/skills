@@ -1,0 +1,4 @@
+interface:
+  display_name: "Data Map"
+  short_description: "Map personal data flows safely."
+  default_prompt: "Use $data-map to build a personal-data inventory, data-flow map, and ROPA-style processing record from product, code, schema, vendor, or infrastructure context."

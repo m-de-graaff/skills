@@ -1,0 +1,4 @@
+interface:
+  display_name: "DPIA"
+  short_description: "Draft privacy impact assessments."
+  default_prompt: "Use $dpia to screen, draft, or review a DPIA or privacy risk assessment for a feature that processes personal data."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Performance Cost Audit"
+  short_description: "Find latency and cost waste."
+  default_prompt: "Use $performance-cost-audit to audit this codebase or diff for slow hot paths, excess queries, duplicate requests, async bottlenecks, provider cost waste, and safe measurable refactors."
