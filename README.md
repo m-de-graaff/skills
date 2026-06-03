@@ -43,28 +43,24 @@ Then invoke the skill you need from your agent:
 - `/appsec-audit` for authorized source-aware AppSec audits and remediation-ready security reports.
 - `/documentation-maintainer` for auditing, pruning, updating, and creating source-aligned project docs.
 
-## Suggested Skill Run Order
+## When to Run What
 
 Use these as practical sequences, not rigid rules. Pick the path that matches the work in front of you.
 
 | Situation | Run these skills in order | Why |
 |---|---|---|
-| Designing a new product feature | `/frontend-design-system` -> `/database-schema-designer` -> `/data-map` -> `/appsec-audit` | Shape the UI and data model first, then identify personal-data flows and security risks before implementation hardens around bad assumptions. |
-| Building a database-heavy feature | `/database-schema-designer` -> `/codebase-refactor-architect` -> `/performance-cost-audit` -> `/appsec-audit` | Start from workload and schema, keep the structure maintainable, then check query/cost shape and authorization or tenant-isolation risks. |
-| Making a dashboard, admin panel, or SaaS screen | `/frontend-design-system` -> `/codebase-refactor-architect` -> `/performance-cost-audit` -> `/appsec-audit` | Design the interface, split large components or tangled modules, then check for over-fetching, request waterfalls, expensive loaders, and exposed privileged operations. |
-| Breaking up large files or tangled modules | `/codebase-refactor-architect` -> `/performance-cost-audit` when structure creates runtime waste -> `/appsec-audit` for auth-sensitive areas | Preserve behavior first, split responsibilities incrementally, then verify performance and security-sensitive boundaries. |
-| Auditing an AI feature or agent workflow | `/llm-integration-cost-and-quality-review` -> `/appsec-audit` when prompts or outputs touch sensitive data | Catch prompt bloat, fallback mistakes, eval gaps, and usage caps before the AI feature becomes expensive or unreliable. |
-| Hardening queues, workers, or cron jobs | `/background-jobs-queue-review` -> `/performance-cost-audit` if throughput or batch size is a concern | Review retries, idempotency, overlap, and backpressure before production failures become noisy and expensive. |
-| Hardening billing or subscription logic | `/billing-payments-hardening-review` -> `/appsec-audit` for plan or permission coupling | Catch webhook, invoice, credit, and subscription edge cases before money-moving bugs ship. |
-| Reviewing authorization or tenant safety | `/access-control-policy-auditor` -> `/appsec-audit` for exploit paths | Verify policy at the source of truth, not just in UI or route checks. |
-| Checking release safety before deploy | `/release-readiness-gate` -> `/performance-cost-audit` or `/appsec-audit` when the release is risky | Make sure the change can be shipped, rolled back, and observed safely. |
-| Reviewing a PR or repository for maintainability debt | `/complexity-demolition-code-review` -> `/codebase-refactor-architect` if the review calls for a split or cleanup plan | Catch unnecessary complexity, then only refactor when there is a concrete architectural payoff. |
-| Adding analytics, cookies, pixels, or tracking SDKs | `/data-map` -> `/cookie-consent-review` -> `/privacy-regime-review` | Inventory what is collected, verify consent/opt-out behavior, then review regime-specific obligations. |
-| Adding a vendor or subprocessors | `/data-map` -> `/vendor-dpa-review` -> `/privacy-regime-review` | Identify the data shared, review contract/transfer/security gaps, then map obligations by regime. |
-| Shipping AI, profiling, risk scoring, or sensitive-data processing | `/data-map` -> `/privacy-regime-review` -> `/dpia` -> `/appsec-audit` | Establish data flows and legal triggers, assess risks to people, then review technical controls. |
-| Before a release | `/performance-cost-audit` -> `/appsec-audit` -> `/privacy-regime-review` | Check hot-path cost/latency, security regressions, and privacy obligations before launch. Add `/dpia`, `/cookie-consent-review`, or `/vendor-dpa-review` when the release touches those areas. |
-| Cleaning up repository docs | `/documentation-maintainer` -> `/appsec-audit` or `/privacy-regime-review` when docs expose security or privacy-sensitive behavior | Align docs with code/config first, then review sensitive operational, security, or privacy claims when the cleanup touches those areas. |
-| Responding to a suspected data leak or exposure | `/privacy-incident` -> `/data-map` -> `/appsec-audit` | Triage and preserve facts first, map affected data and systems, then find and fix the technical control failure. |
+| Blank repo / greenfield | `/frontend-design-system` -> `/database-schema-designer` -> `/data-map` -> `/appsec-audit` | Shape the UI and data model first, then identify data flows and security risks before implementation hardens around bad assumptions. |
+| New feature in an existing repo | `/codebase-refactor-architect` -> `/frontend-design-system` or `/database-schema-designer` as needed -> `/appsec-audit` | Understand the current architecture first, then design the feature inside the existing boundaries instead of creating accidental overlap. |
+| Existing repo cleanup or refactor | `/complexity-demolition-code-review` -> `/codebase-refactor-architect` -> `/performance-cost-audit` when runtime waste is likely | Catch unnecessary complexity, then only refactor when there is a concrete architectural payoff. |
+| Pre-release / ship readiness | `/release-readiness-gate` -> `/performance-cost-audit` -> `/appsec-audit` -> `/privacy-regime-review` | Make sure the change can be shipped, rolled back, observed, and legally released safely. |
+| AI / LLM feature | `/llm-integration-cost-and-quality-review` -> `/appsec-audit` when prompts or outputs touch sensitive data -> `/runtime-observability-engineer` if diagnosis matters | Catch prompt bloat, fallback mistakes, eval gaps, and usage caps before the AI feature becomes expensive or unreliable. |
+| Billing / payments change | `/billing-payments-hardening-review` -> `/access-control-policy-auditor` for plan or permission coupling -> `/appsec-audit` | Catch webhook, invoice, credit, and subscription edge cases before money-moving bugs ship. |
+| Analytics / tracking change | `/analytics-event-hygiene-auditor` -> `/data-map` -> `/cookie-consent-review` or `/privacy-regime-review` when consent or privacy is involved | Verify event quality, then confirm the data you send is necessary, legal, and useful. |
+| Auth / tenant / access-control-sensitive change | `/access-control-policy-auditor` -> `/appsec-audit` -> `/data-map` if personal data is involved | Verify policy at the source of truth, not just in UI or route checks. |
+| Queue / worker / cron change | `/background-jobs-queue-review` -> `/runtime-observability-engineer` -> `/performance-cost-audit` if throughput or batch size is a concern | Review retries, idempotency, overlap, and backpressure before production failures become noisy and expensive. |
+| Product flow work | `/product-flow-friction-review` -> `/frontend-design-system` or `/frontend-performance-profiler` as needed -> `/test-suite-architect` for risky flow changes | Remove friction first, then polish the UI and protect the flow with tests where it matters. |
+| Documentation cleanup | `/documentation-maintainer` -> `/appsec-audit` or `/privacy-regime-review` when docs expose security or privacy-sensitive behavior | Align docs with code/config first, then review sensitive operational, security, or privacy claims when the cleanup touches those areas. |
+| Incident / suspected leak | `/privacy-incident` -> `/data-map` -> `/appsec-audit` | Triage and preserve facts first, map affected data and systems, then find and fix the technical control failure. |
 
 ## Why These Skills Exist
 
