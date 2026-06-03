@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Design System"
+  short_description: "Design polished product UIs with tokens."
+  default_prompt: "Use $frontend-design-system to design a production-ready frontend UI with semantic tokens, light and dark modes, responsive layout, component states, and implementation guidance."
