@@ -6,7 +6,7 @@ This repo is where I keep small, composable skills that help coding agents work 
 
 The goal is not to hand control of the whole process to an agent. The goal is to give the agent sharper workflows that are easy to inspect, adapt, and combine.
 
-The current skills cover workload-first database design, codebase refactoring, strict code-quality review gating, AI integration review, worker and queue safety, billing hardening, config auditing, analytics hygiene, product-flow friction review, API contract enforcement, frontend performance profiling, runtime observability, release readiness, test strategy, access control, performance and cost optimization, disciplined frontend design systems, documentation maintenance, privacy/compliance workflows, and defensive application security review.
+The current skills cover workload-first database design, codebase refactoring, strict code-quality review gating, AI integration review, worker and queue safety, billing hardening, config auditing, analytics hygiene, product-flow friction review, API contract enforcement, frontend performance profiling, runtime observability, release readiness, test strategy, access control, performance and cost optimization, disciplined frontend design systems, documentation maintenance, privacy workflows, and defensive application security review.
 
 ## Quickstart (30-second setup)
 
@@ -127,27 +127,35 @@ README.md
 - **[codebase-refactor-architect](./skills/engineering/codebase-refactor-architect/SKILL.md)** - Find god modules, duplicated logic, oversized files, dead code, and tangled responsibilities; plan incremental behavior-preserving refactors with tests and rollback.
 - **[complexity-demolition-code-review](./skills/engineering/complexity-demolition-code-review/SKILL.md)** - Enforce strict review gates for oversized handwritten files, god modules, thin wrappers, leaked logic, and unnecessary complexity before merge.
 - **[llm-integration-cost-and-quality-review](./skills/engineering/llm-integration-cost-and-quality-review/SKILL.md)** - Review AI features for prompt bloat, eval gaps, hallucination-sensitive flows, PII exposure, structured outputs, retries, and usage caps.
-- **[background-jobs-queue-review](./skills/engineering/background-jobs-queue-review/SKILL.md)** - Review queues, workers, cron jobs, retries, idempotency, DLQs, locking, overlap, backpressure, and observability.
-- **[billing-payments-hardening-review](./skills/engineering/billing-payments-hardening-review/SKILL.md)** - Harden Stripe, subscriptions, credits, invoices, webhooks, usage metering, refunds, and payment edge cases.
-- **[environment-config-auditor](./skills/engineering/environment-config-auditor/SKILL.md)** - Audit env vars, `.env.example`, secret hygiene, staging/prod parity, feature flags, and client/public exposure.
-- **[analytics-event-hygiene-auditor](./skills/engineering/analytics-event-hygiene-auditor/SKILL.md)** - Audit analytics events for duplication, missing funnels, inconsistent names, PII leakage, and tracking cost.
-- **[product-flow-friction-review](./skills/engineering/product-flow-friction-review/SKILL.md)** - Review product flows for step count, unclear CTAs, missing states, dead ends, and mobile friction.
 - **[api-contract-enforcer](./skills/engineering/api-contract-enforcer/SKILL.md)** - Enforce API consistency across REST, tRPC, GraphQL, and webhooks with validation, envelopes, pagination, idempotency, and compatibility.
-- **[frontend-performance-profiler](./skills/engineering/frontend-performance-profiler/SKILL.md)** - Review Core Web Vitals, hydration, bundles, image and font loading, render cost, and blocking scripts.
-- **[runtime-observability-engineer](./skills/engineering/runtime-observability-engineer/SKILL.md)** - Review logs, traces, metrics, alerts, dashboards, and runbooks so production failures are observable.
 - **[test-suite-architect](./skills/engineering/test-suite-architect/SKILL.md)** - Repair test strategy, protect critical flows, add characterization tests, and reduce brittle setup.
 - **[frontend-design-system](./skills/engineering/frontend-design-system/SKILL.md)** - Design polished product UIs with semantic tokens, light/dark themes, responsive layouts, component states, and implementation guidance.
 - **[performance-cost-audit](./skills/engineering/performance-cost-audit/SKILL.md)** - Audit hot paths for N+1 queries, request waterfalls, duplicate work, over-fetching, async bottlenecks, provider costs, and measurable safe refactors.
 
-### Compliance
+### Frontend
 
-- **[data-map](./skills/compliance/data-map/SKILL.md)** - Build personal-data inventories, data-flow maps, and ROPA-style processing records from product, code, schema, infrastructure, and vendor context.
-- **[privacy-regime-review](./skills/compliance/privacy-regime-review/SKILL.md)** - Review products, policies, data flows, code paths, vendors, or incidents against privacy regimes such as GDPR, UK GDPR, CCPA/CPRA, LGPD, PIPEDA, and US state privacy laws.
-- **[dpia](./skills/compliance/dpia/SKILL.md)** - Screen, draft, or review DPIAs and similar privacy risk assessments for high-risk personal-data processing.
-- **[privacy-requests](./skills/compliance/privacy-requests/SKILL.md)** - Design or review privacy rights workflows for access, deletion, correction, portability, opt-out, consent withdrawal, and audit evidence.
-- **[vendor-dpa-review](./skills/compliance/vendor-dpa-review/SKILL.md)** - Review vendors, DPAs, subprocessors, transfer terms, security exhibits, deletion commitments, and service-provider arrangements.
-- **[privacy-incident](./skills/compliance/privacy-incident/SKILL.md)** - Triage suspected personal-data incidents, preserve evidence, assess affected data and people, and prepare escalation materials.
-- **[cookie-consent-review](./skills/compliance/cookie-consent-review/SKILL.md)** - Review cookies, pixels, SDKs, analytics, ads, CMP behavior, opt-out signals, and consent or disclosure gaps.
+- **[frontend-performance-profiler](./skills/frontend/frontend-performance-profiler/SKILL.md)** - Review Core Web Vitals, hydration, bundles, image and font loading, render cost, and blocking scripts.
+
+### Operations
+
+- **[background-jobs-queue-review](./skills/operations/background-jobs-queue-review/SKILL.md)** - Review queues, workers, cron jobs, retries, idempotency, DLQs, locking, overlap, backpressure, and observability.
+- **[environment-config-auditor](./skills/operations/environment-config-auditor/SKILL.md)** - Audit env vars, `.env.example`, secret hygiene, staging/prod parity, feature flags, and client/public exposure.
+- **[runtime-observability-engineer](./skills/operations/runtime-observability-engineer/SKILL.md)** - Review logs, traces, metrics, alerts, dashboards, and runbooks so production failures are observable.
+
+### Product
+
+- **[analytics-event-hygiene-auditor](./skills/product/analytics-event-hygiene-auditor/SKILL.md)** - Audit analytics events for duplication, missing funnels, inconsistent names, PII leakage, and tracking cost.
+- **[product-flow-friction-review](./skills/product/product-flow-friction-review/SKILL.md)** - Review product flows for step count, unclear CTAs, missing states, dead ends, and mobile friction.
+
+### Privacy
+
+- **[data-map](./skills/privacy/data-map/SKILL.md)** - Build personal-data inventories, data-flow maps, and ROPA-style processing records from product, code, schema, infrastructure, and vendor context.
+- **[privacy-regime-review](./skills/privacy/privacy-regime-review/SKILL.md)** - Review products, policies, data flows, code paths, vendors, or incidents against privacy regimes such as GDPR, UK GDPR, CCPA/CPRA, LGPD, PIPEDA, and US state privacy laws.
+- **[dpia](./skills/privacy/dpia/SKILL.md)** - Screen, draft, or review DPIAs and similar privacy risk assessments for high-risk personal-data processing.
+- **[privacy-requests](./skills/privacy/privacy-requests/SKILL.md)** - Design or review privacy rights workflows for access, deletion, correction, portability, opt-out, consent withdrawal, and audit evidence.
+- **[vendor-dpa-review](./skills/privacy/vendor-dpa-review/SKILL.md)** - Review vendors, DPAs, subprocessors, transfer terms, security exhibits, deletion commitments, and service-provider arrangements.
+- **[privacy-incident](./skills/privacy/privacy-incident/SKILL.md)** - Triage suspected personal-data incidents, preserve evidence, assess affected data and people, and prepare escalation materials.
+- **[cookie-consent-review](./skills/privacy/cookie-consent-review/SKILL.md)** - Review cookies, pixels, SDKs, analytics, ads, CMP behavior, opt-out signals, and consent or disclosure gaps.
 
 ### Security
 
