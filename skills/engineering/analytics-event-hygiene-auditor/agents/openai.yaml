@@ -1,0 +1,4 @@
+interface:
+  display_name: "Analytics Event Hygiene"
+  short_description: "Block messy or expensive analytics instrumentation."
+  default_prompt: "Use $analytics-event-hygiene-auditor to review analytics instrumentation for duplicate events, missing funnel events, inconsistent event names, PII leakage, over-tracking, high-volume cost, server/client mismatch, missing attribution, and revenue tracking issues."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Access Control Policy Auditor"
+  short_description: "Block authorization and tenant-isolation gaps."
+  default_prompt: "Use $access-control-policy-auditor to review roles, permissions, RBAC, ABAC, tenant isolation, Supabase RLS, Postgres policies, admin bypasses, server/client trust boundaries, IDOR or BOLA risk, ownership checks, invite flows, and billing-plan permissions."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Flow Friction Review"
+  short_description: "Block confusing or brittle product flows."
+  default_prompt: "Use $product-flow-friction-review to review signup, onboarding, checkout, ordering, booking, account setup, invites, upgrades, cancellation, and error recovery flows for too many steps, unclear CTAs, missing states, fake polish, vague errors, dead ends, and broken mobile flow."

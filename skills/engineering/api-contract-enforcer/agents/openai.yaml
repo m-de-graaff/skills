@@ -1,0 +1,4 @@
+interface:
+  display_name: "API Contract Enforcer"
+  short_description: "Block unpredictable API and integration boundaries."
+  default_prompt: "Use $api-contract-enforcer to review REST, tRPC, GraphQL, and webhook boundaries for route consistency, OpenAPI coverage, schema hygiene, request validation, response envelopes, pagination, errors, idempotency, webhook verification, retry behavior, rate limits, compatibility, and client generation."

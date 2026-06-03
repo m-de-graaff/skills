@@ -1,0 +1,4 @@
+interface:
+  display_name: "Background Jobs Review"
+  short_description: "Block queue and worker failure modes."
+  default_prompt: "Use $background-jobs-queue-review to review queues, cron jobs, workers, and scheduled tasks for retries, idempotency, dead-letter queues, locking, duplicate execution, race conditions, timeout behavior, cost, memory use, observability, overlap, and backpressure."

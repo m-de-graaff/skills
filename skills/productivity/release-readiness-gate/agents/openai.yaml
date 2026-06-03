@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release Readiness Gate"
+  short_description: "Block unsafe deploys before they reach production."
+  default_prompt: "Use $release-readiness-gate to review CI/CD, deploy config, migrations, environment variables, rollback paths, feature flags, release notes, smoke tests, preview deployments, canary plans, and production-only risk."

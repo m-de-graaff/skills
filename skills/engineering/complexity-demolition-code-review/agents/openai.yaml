@@ -1,0 +1,4 @@
+interface:
+  display_name: "Complexity Demolition Review"
+  short_description: "Block avoidable code complexity before merge."
+  default_prompt: "Use $complexity-demolition-code-review to review this PR, branch, repository, folder, or file set for oversized files, god modules, leaked logic, duplication, thin wrappers, and maintainability regressions."

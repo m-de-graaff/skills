@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLM Integration Review"
+  short_description: "Block AI cost and quality regressions."
+  default_prompt: "Use $llm-integration-cost-and-quality-review to review this AI or LLM feature for prompt/token bloat, repeated model calls, unnecessary context, streaming behavior, fallback models, evals, PII risk, structured output validation, retries, and usage caps."

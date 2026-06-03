@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Performance Profiler"
+  short_description: "Block UX and runtime performance regressions."
+  default_prompt: "Use $frontend-performance-profiler to review frontend runtime performance for unnecessary client components, excessive hydration, huge bundles, duplicate dependencies, image and font loading, layout shift, expensive React renders, weak suspense states, client-side fetching, blocking scripts, and mobile performance."

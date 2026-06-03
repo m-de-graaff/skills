@@ -1,0 +1,4 @@
+interface:
+  display_name: "Environment Config Auditor"
+  short_description: "Block broken or unsafe runtime config."
+  default_prompt: "Use $environment-config-auditor to review environment variables, .env.example, staging and production parity, secret naming, unused env vars, leaked secrets, duplicated config, feature flags, public/private env misuse, NEXT_PUBLIC exposure, and onboarding docs."

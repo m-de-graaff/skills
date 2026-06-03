@@ -1,0 +1,4 @@
+interface:
+  display_name: "Billing Hardening Review"
+  short_description: "Block payment and subscription edge-case bugs."
+  default_prompt: "Use $billing-payments-hardening-review to review billing, payments, subscriptions, credits, invoices, usage metering, webhook idempotency, failed payment recovery, refunds, plan permissions, and sandbox coverage."

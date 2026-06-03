@@ -1,0 +1,4 @@
+interface:
+  display_name: "Runtime Observability Engineer"
+  short_description: "Block unobservable production failures."
+  default_prompt: "Use $runtime-observability-engineer to review structured logs, error boundaries, request IDs, trace IDs, metrics, slow-query logging, background job visibility, webhook replay logs, alert rules, dashboards, and incident runbooks."

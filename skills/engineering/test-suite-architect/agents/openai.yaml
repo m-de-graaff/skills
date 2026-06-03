@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test Suite Architect"
+  short_description: "Block risky changes without test protection."
+  default_prompt: "Use $test-suite-architect to review the repo's test strategy, find critical code with no tests, add characterization tests before risky refactors, detect brittle tests, remove duplicated setup, and add unit, integration, E2E, regression, and smoke coverage where appropriate."
