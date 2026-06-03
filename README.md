@@ -1,16 +1,4 @@
-<p>
-  <a href="https://skills.sh/m-de-graaff/skills">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://res.cloudinary.com/total-typescript/image/upload/v1777382277/skills-repo-dark_2x.png">
-      <source media="(prefers-color-scheme: light)" srcset="https://res.cloudinary.com/total-typescript/image/upload/v1777382277/skill-repo-light_2x.png">
-      <img alt="Skills" src="https://res.cloudinary.com/total-typescript/image/upload/v1777382277/skill-repo-light_2x.png" width="369">
-    </picture>
-  </a>
-</p>
-
 # Skills For Real Engineers
-
-[![skills.sh](https://skills.sh/b/m-de-graaff/skills)](https://skills.sh/m-de-graaff/skills)
 
 Agent skills for real engineering work.
 
