@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codebase Refactor Architect"
+  short_description: "Plan safe structural refactors."
+  default_prompt: "Use $codebase-refactor-architect to scan this codebase for god modules, duplicated logic, oversized files, tangled responsibilities, dead code, and safe behavior-preserving refactor steps."

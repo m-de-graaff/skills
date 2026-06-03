@@ -1,0 +1,4 @@
+interface:
+  display_name: "Documentation Maintainer"
+  short_description: "Audit and maintain project docs."
+  default_prompt: "Use $documentation-maintainer to audit this repository's documentation against code and configuration, update stale docs, prune duplicates, create missing docs, and produce an evidence-based maintenance report."
