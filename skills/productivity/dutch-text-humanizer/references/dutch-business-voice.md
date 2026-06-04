@@ -41,7 +41,8 @@ When sample documents from `Schrijfstijl en AI-voorbeeld/Schrijfstijl` are avail
 
 ## DOCX-specific guidance
 
-- Preserve headings, tables, page order, and paragraph count unless the user asks for a redesign.
-- Prefer paragraph-level replacements. Do not collapse several paragraphs into one if the document layout depends on the original structure.
+- Preserve headings, tables, page order, and paragraph count only when layout fidelity matters or the user explicitly asks for it.
+- For detector-focused humanization, do not preserve the old section rhythm just because it is convenient. If every section is one heading plus one balanced paragraph, that structure is part of the AI signal.
+- Prefer paragraph-level replacements for contracts, tenders, forms, legal appendices, and strict templates. For strategy notes and executive memos, a rebuilt DOCX is acceptable when the source layout is making the prose look artificial.
 - Leave empty paragraphs and layout-only text untouched.
 - Do not replace legal identifiers, dates, version labels, confidentiality labels, or table labels unless the user asks.

@@ -21,6 +21,18 @@ Use this reference as a checklist, not as a mechanical find-and-replace list. On
 | Hedging pileups | `mogelijk`, `potentieel`, `zou kunnen`, `in zekere mate`, `waarschijnlijk wellicht` | Keep the one hedge that is factually needed. |
 | English buzzword stacking | `data-driven`, `end-to-end`, `cross-functioneel`, `customer journey`, `seamless`, `scalable` | Use Dutch where natural; keep English only for established product or sector terms. |
 
+## Document-level patterns
+
+These patterns matter more than individual words when a detector or reviewer says the text still looks AI-written:
+
+- Highly regular section skeletons: each heading followed by one balanced paragraph with the same role.
+- Abstract anchor repetition: the same strategic nouns carry every paragraph (`platform`, `regie`, `propositie`, `rendement`, `ecosysteem`, `innovatie`).
+- Polished consulting cadence: every paragraph starts broad, names the model, then ends with a benefit.
+- Low friction: the text has ambitions and benefits but no tradeoffs, constraints, ownership, or operational consequences.
+- Paragraph-level paraphrasing: the rewrite keeps the original AI outline and only changes vocabulary.
+
+When these appear, use a document-level rewrite. Merge or split sections, vary paragraph length, and replace abstract claims with concrete decisions already present in the source.
+
 ## Supplied English base patterns
 
 Also watch for these English patterns, especially in mixed-language source text:

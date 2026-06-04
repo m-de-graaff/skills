@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""Extract, map, audit, and paragraph-replace document text.
+"""Extract, map, audit, profile, render, and rewrite document text.
 
 The DOCX paths use only Python's standard library so the helper stays usable in
 minimal agent environments. PDF support is opportunistic: it uses whichever
-common extraction library is already installed.
+common extraction library is already installed. Rebuilt DOCX output uses
+python-docx because generating a valid Word package by hand is not worth the
+fragility.
 """
 
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import html
 import json
 import os
@@ -21,6 +24,7 @@ import zipfile
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from pathlib import Path
+from statistics import mean, pstdev
 from typing import Any, Iterable
 from xml.etree import ElementTree as ET
 
@@ -37,6 +41,91 @@ WORD_PARTS = [
     "word/document.xml",
     "word/footnotes.xml",
     "word/endnotes.xml",
+]
+WORD_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9'/-]*")
+DUTCH_STOPWORDS = {
+    "aan",
+    "als",
+    "bij",
+    "dat",
+    "de",
+    "deze",
+    "die",
+    "dit",
+    "door",
+    "een",
+    "en",
+    "er",
+    "het",
+    "hun",
+    "in",
+    "is",
+    "met",
+    "naar",
+    "niet",
+    "om",
+    "of",
+    "op",
+    "ook",
+    "te",
+    "tot",
+    "uit",
+    "van",
+    "voor",
+    "waar",
+    "wij",
+    "wordt",
+    "ze",
+    "zijn",
+    "zo",
+}
+ABSTRACT_TERMS = [
+    "adviesgedreven",
+    "ambitie",
+    "bedrijfsmodel",
+    "continuïteit",
+    "data-gedreven",
+    "ecosysteem",
+    "executiekracht",
+    "geïntegreerd",
+    "governance",
+    "groeicapaciteit",
+    "informatievoorsprong",
+    "innovatie",
+    "klantbinding",
+    "klantvraagstuk",
+    "markttoegang",
+    "onderscheidend",
+    "onderscheidend vermogen",
+    "oplossinggedreven",
+    "platform",
+    "platformdenken",
+    "platformdiensten",
+    "platformmodel",
+    "proactievere",
+    "processturing",
+    "propositie",
+    "regie",
+    "rendement",
+    "schaalbaar",
+    "strategisch",
+    "structureel",
+    "terugkerende",
+    "toegevoegde waarde",
+    "transformatie",
+    "verdienmodel",
+]
+CONSULTING_TERMS = [
+    "aanbodgestuurd",
+    "bestuurlijke verantwoordelijkheid",
+    "commercieel model",
+    "financiële discipline",
+    "leidende positie",
+    "op het snijvlak",
+    "probleemgestuurd",
+    "strategische relevantie",
+    "structureel onderdeel",
+    "vertaalslag",
 ]
 
 try:
@@ -419,6 +508,389 @@ def audit_text(text: str) -> list[str]:
     return findings
 
 
+def words_in(text: str) -> list[str]:
+    return [match.group(0).lower() for match in WORD_RE.finditer(text)]
+
+
+def content_words_in(text: str) -> list[str]:
+    return [
+        word
+        for word in words_in(text)
+        if len(word) > 3 and word not in DUTCH_STOPWORDS and not word.isdigit()
+    ]
+
+
+def split_sentences(text: str) -> list[str]:
+    sentences: list[str] = []
+    for line in re.split(r"\n+", text):
+        cleaned = line.strip().strip("•- \t")
+        if not cleaned:
+            continue
+        parts = re.split(r"(?<=[.!?])\s+(?=[A-ZÀ-Ö0-9\"'])", cleaned)
+        sentences.extend(part.strip() for part in parts if part.strip())
+    return sentences
+
+
+def series_stats(values: list[int]) -> dict[str, Any]:
+    if not values:
+        return {"count": 0, "average": 0, "stdev": 0, "coefficient_of_variation": 0, "min": 0, "max": 0}
+    avg = mean(values)
+    deviation = pstdev(values) if len(values) > 1 else 0
+    return {
+        "count": len(values),
+        "average": round(avg, 2),
+        "stdev": round(deviation, 2),
+        "coefficient_of_variation": round(deviation / avg, 2) if avg else 0,
+        "min": min(values),
+        "max": max(values),
+    }
+
+
+def count_terms(text: str, terms: list[str]) -> dict[str, int]:
+    lower = text.lower()
+    counts: dict[str, int] = {}
+    for term in terms:
+        pattern = r"(?<![\wÀ-ÖØ-öø-ÿ])" + re.escape(term.lower()) + r"(?![\wÀ-ÖØ-öø-ÿ])"
+        count = len(re.findall(pattern, lower, flags=re.IGNORECASE))
+        if count:
+            counts[term] = count
+    return counts
+
+
+def top_repeated_words(text: str, limit: int = 12) -> list[dict[str, Any]]:
+    counts = Counter(content_words_in(text))
+    return [
+        {"word": word, "count": count}
+        for word, count in counts.most_common(limit)
+        if count > 1
+    ]
+
+
+def top_repeated_ngrams(text: str, n: int, limit: int = 10) -> list[dict[str, Any]]:
+    words = words_in(text)
+    counts: Counter[str] = Counter()
+    abstract_words = {term for term in ABSTRACT_TERMS if " " not in term}
+    for index in range(0, max(0, len(words) - n + 1)):
+        chunk = words[index : index + n]
+        if all(word in DUTCH_STOPWORDS for word in chunk):
+            continue
+        if any(len(word) <= 1 for word in chunk):
+            continue
+        if chunk[0] in DUTCH_STOPWORDS or chunk[-1] in DUTCH_STOPWORDS:
+            allowed_article_anchor = (
+                n == 2
+                and chunk[0] in {"de", "het", "een"}
+                and chunk[1] in abstract_words
+            )
+            if not allowed_article_anchor:
+                continue
+        counts[" ".join(chunk)] += 1
+    return [
+        {"phrase": phrase, "count": count}
+        for phrase, count in counts.most_common(limit)
+        if count > 1
+    ]
+
+
+def concrete_anchor_counts(text: str) -> dict[str, int]:
+    numbers = len(re.findall(r"\b\d+(?:[.,]\d+)?\b", text))
+    currency = len(re.findall(r"€\s?\d+(?:[.,]\d+)?", text))
+    percentages = len(re.findall(r"\b\d+(?:[.,]\d+)?\s?%", text))
+    entities = len(
+        re.findall(
+            r"\b[A-ZÀ-Ý][A-Za-zÀ-ÖØ-öø-ÿ]*(?:[ /&.-]+[A-ZÀ-Ý][A-Za-zÀ-ÖØ-öø-ÿ]*)*\b",
+            text,
+        )
+    )
+    return {
+        "numbers": numbers,
+        "currency": currency,
+        "percentages": percentages,
+        "capitalized_entities": entities,
+        "total": numbers + currency + percentages + entities,
+    }
+
+
+def section_structure(paragraphs: list[str]) -> dict[str, Any]:
+    headings: list[str] = []
+    bullet_lines = 0
+    for paragraph in paragraphs:
+        lines = [line.strip() for line in paragraph.splitlines() if line.strip()]
+        if not lines:
+            continue
+        bullet_lines += sum(1 for line in lines if line.startswith(("•", "- ")))
+        first = lines[0]
+        if len(lines) > 1 and len(first) <= 90 and not first.endswith((".", ":", ";", ",")):
+            headings.append(first)
+    heading_ratio = len(headings) / len(paragraphs) if paragraphs else 0
+    return {
+        "heading_body_sections": len(headings),
+        "heading_body_ratio": round(heading_ratio, 2),
+        "bullet_lines": bullet_lines,
+        "headings": headings,
+    }
+
+
+def score_profile(
+    word_count: int,
+    abstract_hit_count: int,
+    consulting_hit_count: int,
+    repeated_bigram_count: int,
+    paragraph_stats: dict[str, Any],
+    sentence_stats: dict[str, Any],
+    structure: dict[str, Any],
+    concrete_total: int,
+) -> dict[str, Any]:
+    if word_count <= 0:
+        return {"score": 0, "label": "empty", "signals": []}
+
+    abstract_density = abstract_hit_count / word_count * 100
+    concrete_density = concrete_total / word_count * 100
+    score = 0
+    signals: list[str] = []
+
+    if abstract_density >= 7:
+        score += 30
+        signals.append("high abstract Dutch business vocabulary density")
+    elif abstract_density >= 4:
+        score += 18
+        signals.append("moderate abstract Dutch business vocabulary density")
+
+    if consulting_hit_count >= 6:
+        score += 18
+        signals.append("many consulting-style stock phrases")
+    elif consulting_hit_count >= 3:
+        score += 10
+        signals.append("some consulting-style stock phrases")
+
+    if repeated_bigram_count >= 3:
+        score += 18
+        signals.append("many repeated two-word phrases")
+    elif repeated_bigram_count >= 2:
+        score += 10
+        signals.append("some repeated two-word phrases")
+
+    if structure["heading_body_ratio"] >= 0.65 and structure["heading_body_sections"] >= 6:
+        score += 18
+        signals.append("highly regular heading-plus-paragraph section skeleton")
+
+    if paragraph_stats["count"] >= 8 and paragraph_stats["coefficient_of_variation"] < 0.5:
+        score += 8
+        signals.append("paragraph lengths are unusually even")
+    if sentence_stats["count"] >= 12 and sentence_stats["coefficient_of_variation"] < 0.45:
+        score += 6
+        signals.append("sentence lengths are unusually even")
+
+    if concrete_density >= 10:
+        score -= 8
+    elif concrete_density < 4 and word_count >= 250:
+        score += 8
+        signals.append("few concrete anchors compared with document length")
+
+    score = max(0, min(100, score))
+    if score >= 65:
+        label = "high AI-like structural risk"
+    elif score >= 35:
+        label = "moderate AI-like structural risk"
+    else:
+        label = "low AI-like structural risk"
+    return {"score": score, "label": label, "signals": signals}
+
+
+def humanity_profile(items: list[dict[str, Any]]) -> dict[str, Any]:
+    paragraphs = [str(item["text"]).strip() for item in items if str(item["text"]).strip()]
+    text = "\n\n".join(paragraphs)
+    words = words_in(text)
+    sentences = split_sentences(text)
+    abstract_counts = count_terms(text, ABSTRACT_TERMS)
+    consulting_counts = count_terms(text, CONSULTING_TERMS)
+    repeated_bigrams = top_repeated_ngrams(text, 2)
+    repeated_trigrams = top_repeated_ngrams(text, 3)
+    significant_repeated_bigrams = sum(1 for row in repeated_bigrams if row["count"] >= 3)
+    concrete = concrete_anchor_counts(text)
+    paragraph_stats = series_stats([len(words_in(paragraph)) for paragraph in paragraphs])
+    sentence_stats = series_stats([len(words_in(sentence)) for sentence in sentences])
+    structure = section_structure(paragraphs)
+    abstract_hit_count = sum(abstract_counts.values())
+    consulting_hit_count = sum(consulting_counts.values())
+    score = score_profile(
+        word_count=len(words),
+        abstract_hit_count=abstract_hit_count,
+        consulting_hit_count=consulting_hit_count,
+        repeated_bigram_count=significant_repeated_bigrams,
+        paragraph_stats=paragraph_stats,
+        sentence_stats=sentence_stats,
+        structure=structure,
+        concrete_total=concrete["total"],
+    )
+    return {
+        "counts": {
+            "paragraphs": len(paragraphs),
+            "sentences": len(sentences),
+            "words": len(words),
+        },
+        "paragraph_words": paragraph_stats,
+        "sentence_words": sentence_stats,
+        "abstract_terms": {
+            "total": abstract_hit_count,
+            "density_per_100_words": round(abstract_hit_count / len(words) * 100, 2) if words else 0,
+            "terms": abstract_counts,
+        },
+        "consulting_terms": {
+            "total": consulting_hit_count,
+            "density_per_100_words": round(consulting_hit_count / len(words) * 100, 2) if words else 0,
+            "terms": consulting_counts,
+        },
+        "concrete_anchors": {
+            **concrete,
+            "density_per_100_words": round(concrete["total"] / len(words) * 100, 2) if words else 0,
+        },
+        "repetition": {
+            "words": top_repeated_words(text),
+            "bigrams": repeated_bigrams,
+            "trigrams": repeated_trigrams,
+            "significant_bigram_count": significant_repeated_bigrams,
+        },
+        "structure": structure,
+        "obvious_ai_tells": audit_text(text),
+        "risk": score,
+    }
+
+
+def print_humanity_profile(profile: dict[str, Any]) -> None:
+    counts = profile["counts"]
+    print(f"Risk: {profile['risk']['score']} ({profile['risk']['label']})")
+    print(
+        "Counts: "
+        f"{counts['paragraphs']} paragraphs, {counts['sentences']} sentences, {counts['words']} words"
+    )
+    print(f"Paragraph words: {profile['paragraph_words']}")
+    print(f"Sentence words: {profile['sentence_words']}")
+    print(
+        "Abstract terms: "
+        f"{profile['abstract_terms']['total']} "
+        f"({profile['abstract_terms']['density_per_100_words']} per 100 words)"
+    )
+    print(
+        "Consulting terms: "
+        f"{profile['consulting_terms']['total']} "
+        f"({profile['consulting_terms']['density_per_100_words']} per 100 words)"
+    )
+    print(
+        "Concrete anchors: "
+        f"{profile['concrete_anchors']['total']} "
+        f"({profile['concrete_anchors']['density_per_100_words']} per 100 words)"
+    )
+    print(
+        "Structure: "
+        f"{profile['structure']['heading_body_sections']} heading-body sections, "
+        f"ratio {profile['structure']['heading_body_ratio']}, "
+        f"{profile['structure']['bullet_lines']} bullet lines"
+    )
+    if profile["risk"]["signals"]:
+        print("Signals:")
+        for signal in profile["risk"]["signals"]:
+            print(f"- {signal}")
+    if profile["repetition"]["words"]:
+        print("Repeated words:")
+        for row in profile["repetition"]["words"][:8]:
+            print(f"- {row['word']}: {row['count']}")
+    if profile["repetition"]["bigrams"]:
+        print(f"Repeated phrases (3+ count: {profile['repetition']['significant_bigram_count']}):")
+        for row in profile["repetition"]["bigrams"][:8]:
+            print(f"- {row['phrase']}: {row['count']}")
+    if profile["obvious_ai_tells"]:
+        print("Obvious tells:")
+        for finding in profile["obvious_ai_tells"]:
+            print(f"- {finding}")
+
+
+def read_rewrite_text(path_arg: str) -> str:
+    if path_arg == "-":
+        raw = sys.stdin.buffer.read()
+        try:
+            return raw.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            return raw.decode(sys.stdin.encoding or "utf-8", errors="replace")
+    return Path(path_arg).read_text(encoding="utf-8-sig")
+
+
+def add_docx_block(doc: Any, block: str, block_index: int) -> None:
+    lines = [line.rstrip() for line in block.splitlines() if line.strip()]
+    if not lines:
+        return
+
+    first = lines[0].strip()
+    if first.startswith("# "):
+        doc.add_heading(first[2:].strip(), level=1)
+        return
+    if first.startswith("## "):
+        doc.add_heading(first[3:].strip(), level=2)
+        return
+    if first.startswith("### "):
+        doc.add_heading(first[4:].strip(), level=3)
+        return
+
+    if all(line.strip().startswith(("- ", "• ")) for line in lines):
+        for line in lines:
+            text = line.strip()[2:].strip()
+            if text:
+                doc.add_paragraph(text, style="List Bullet")
+        return
+
+    if block_index == 0 and len(lines) == 1 and len(first) <= 100 and not first.endswith("."):
+        doc.add_paragraph(first, style="Title")
+        return
+
+    paragraph = doc.add_paragraph()
+    for index, line in enumerate(lines):
+        if index:
+            paragraph.add_run().add_break()
+        paragraph.add_run(line.strip())
+
+
+def write_rebuilt_docx(source: Path, text: str, output: Path) -> None:
+    try:
+        import docx  # type: ignore
+        from docx.shared import Cm, Pt  # type: ignore
+    except ImportError as exc:  # pragma: no cover - depends on local environment.
+        raise RuntimeError("write-docx-from-text requires python-docx.") from exc
+
+    if source.suffix.lower() != ".docx":
+        raise RuntimeError("Source must be a DOCX file.")
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    doc = docx.Document()
+    for section in doc.sections:
+        section.top_margin = Cm(2)
+        section.bottom_margin = Cm(2)
+        section.left_margin = Cm(2)
+        section.right_margin = Cm(2)
+
+    styles = doc.styles
+    styles["Normal"].font.name = "Aptos"
+    styles["Normal"].font.size = Pt(10.5)
+    styles["Title"].font.name = "Aptos Display"
+    styles["Title"].font.size = Pt(20)
+    styles["Heading 1"].font.name = "Aptos Display"
+    styles["Heading 1"].font.size = Pt(14)
+    styles["Heading 2"].font.name = "Aptos Display"
+    styles["Heading 2"].font.size = Pt(12)
+
+    blocks = [block.strip() for block in re.split(r"\n\s*\n", text.strip()) if block.strip()]
+    if not blocks:
+        raise RuntimeError("No text blocks found for DOCX output.")
+
+    for index, block in enumerate(blocks):
+        add_docx_block(doc, block, index)
+
+    doc.core_properties.comments = f"Rebuilt from {source.name} by dutch-text-humanizer."
+    doc.save(str(output))
+    failures, _warnings = validate_docx_package(output, source=None, fail_on_text=False)
+    if failures:
+        raise RuntimeError("DOCX package validation failed after rebuild: " + "; ".join(failures))
+
+
 def command_extract(args: argparse.Namespace) -> None:
     items = extract_any(Path(args.input))
     write_extraction(items, args.format)
@@ -468,6 +940,55 @@ def command_audit_docx(args: argparse.Namespace) -> None:
             print(f"- {failure}")
         sys.exit(1)
     print("DOCX package audit passed.")
+
+
+def command_profile_humanity(args: argparse.Namespace) -> None:
+    profile = humanity_profile(extract_any(Path(args.input)))
+    if args.format == "json":
+        json.dump(profile, sys.stdout, ensure_ascii=False, indent=2)
+        sys.stdout.write("\n")
+        return
+    print_humanity_profile(profile)
+
+
+def command_compare_humanity(args: argparse.Namespace) -> None:
+    before = humanity_profile(extract_any(Path(args.before)))
+    after = humanity_profile(extract_any(Path(args.after)))
+    payload = {
+        "before": before,
+        "after": after,
+        "delta": {
+            "risk_score": after["risk"]["score"] - before["risk"]["score"],
+            "abstract_terms": after["abstract_terms"]["total"] - before["abstract_terms"]["total"],
+            "consulting_terms": after["consulting_terms"]["total"] - before["consulting_terms"]["total"],
+            "significant_repeated_bigrams": (
+                after["repetition"]["significant_bigram_count"]
+                - before["repetition"]["significant_bigram_count"]
+            ),
+            "heading_body_sections": (
+                after["structure"]["heading_body_sections"] - before["structure"]["heading_body_sections"]
+            ),
+            "words": after["counts"]["words"] - before["counts"]["words"],
+        },
+    }
+    if args.format == "json":
+        json.dump(payload, sys.stdout, ensure_ascii=False, indent=2)
+        sys.stdout.write("\n")
+        return
+
+    print("Before:")
+    print_humanity_profile(before)
+    print("\nAfter:")
+    print_humanity_profile(after)
+    print("\nDelta:")
+    for key, value in payload["delta"].items():
+        print(f"- {key}: {value:+}")
+
+
+def command_write_docx_from_text(args: argparse.Namespace) -> None:
+    text = read_rewrite_text(args.text)
+    write_rebuilt_docx(Path(args.source), text, Path(args.output))
+    print(f"Wrote rebuilt DOCX to {args.output}")
 
 
 def command_diff_docx(args: argparse.Namespace) -> None:
@@ -597,6 +1118,29 @@ def build_parser() -> argparse.ArgumentParser:
     audit_docx_parser.add_argument("input")
     audit_docx_parser.add_argument("--source", help="Optional source DOCX for package entry comparison.")
     audit_docx_parser.set_defaults(func=command_audit_docx)
+
+    profile_parser = subparsers.add_parser(
+        "profile-humanity", help="Profile document-level AI-like structure and Dutch business prose signals."
+    )
+    profile_parser.add_argument("input")
+    profile_parser.add_argument("--format", choices=["text", "json"], default="text")
+    profile_parser.set_defaults(func=command_profile_humanity)
+
+    compare_parser = subparsers.add_parser(
+        "compare-humanity", help="Compare structural humanization signals between two documents."
+    )
+    compare_parser.add_argument("before")
+    compare_parser.add_argument("after")
+    compare_parser.add_argument("--format", choices=["text", "json"], default="text")
+    compare_parser.set_defaults(func=command_compare_humanity)
+
+    write_parser = subparsers.add_parser(
+        "write-docx-from-text", help="Build a clean DOCX from Markdown-ish rewritten text."
+    )
+    write_parser.add_argument("source", help="Source DOCX used for provenance and validation context.")
+    write_parser.add_argument("text", help="Text file to write, or '-' to read from stdin.")
+    write_parser.add_argument("output")
+    write_parser.set_defaults(func=command_write_docx_from_text)
 
     diff_docx_parser = subparsers.add_parser("diff-docx", help="Compare non-empty DOCX paragraphs by ID.")
     diff_docx_parser.add_argument("source")
