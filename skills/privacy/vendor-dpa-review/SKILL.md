@@ -1,6 +1,6 @@
 ---
 name: vendor-dpa-review
-description: Reviews vendors, processors, subprocessors, service providers, contractors, DPAs, SCCs, transfer terms, deletion commitments, security exhibits, and subprocessor disclosures for privacy compliance risk. Use when the user mentions vendor review, DPA, data processing agreement, processor, subprocessor, service provider, contractor, SCCs, international transfers, subprocessors, third-party sharing, procurement privacy review, or AI vendor data use.
+description: Review vendors and DPAs: processors, subprocessors, SCCs, transfers, deletion, security exhibits, vendor risk.
 ---
 
 # Vendor DPA Review

@@ -1,6 +1,6 @@
 ---
 name: frontend-performance-profiler
-description: Reviews frontend runtime performance for unnecessary client components, excessive hydration, huge bundles, duplicate dependencies, bad image loading, slow fonts, layout shift, expensive React renders, bad suspense or loading states, excessive client-side fetching, blocking third-party scripts, and bad mobile performance. Use when reviewing UX/runtime performance or Core Web Vitals risk.
+description: Audit frontend speed: Core Web Vitals, hydration, bundles, images, fonts, render cost, Suspense, mobile.
 ---
 
 # Frontend Performance Profiler

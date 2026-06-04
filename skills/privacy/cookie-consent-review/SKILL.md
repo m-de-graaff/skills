@@ -1,6 +1,6 @@
 ---
 name: cookie-consent-review
-description: Reviews cookies, pixels, SDKs, analytics, ads, consent banners, preference centres, tracking scripts, opt-out signals, and cookie disclosures for privacy compliance risk. Use when the user mentions cookies, consent banner, CMP, analytics, pixels, Meta Pixel, Google Analytics, ads, tracking, SDKs, ePrivacy, PECR, GPC, Do Not Sell or Share, consent mode, session replay, or tag firing.
+description: Review cookies and tracking: CMPs, pixels, analytics, ads, SDKs, opt-outs, consent, disclosures.
 ---
 
 # Cookie Consent Review

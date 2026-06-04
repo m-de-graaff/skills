@@ -1,6 +1,6 @@
 ---
 name: llm-integration-cost-and-quality-review
-description: Reviews AI and LLM features for prompt/token bloat, repeated model calls, cacheable calls, unnecessary context, streaming behavior, fallback models, evals, prompt regression tests, hallucination-sensitive flows, PII in prompts, structured output validation, retry and timeout cost, and per-user or per-org usage caps. Use when reviewing prompt chains, agent flows, model wrappers, or AI product features.
+description: Review LLM features for prompt bloat, model choice, token cost, caching, evals, PII, retries, fallbacks, validation.
 ---
 
 # LLM Integration Cost and Quality Review

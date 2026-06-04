@@ -18,6 +18,8 @@ npx skills@latest add m-de-graaff/skills
 
 Pick the skills you want, and choose which coding agents you want to install them on.
 
+These skills use the Agent Skills `SKILL.md` format used by Codex and Claude Code: YAML frontmatter followed by Markdown instructions. Keep frontmatter descriptions short because every installed skill description is loaded into the model's skill listing.
+
 Then invoke the skill you need from your agent:
 
 - `/database-schema-designer` for workload-aware SQL and NoSQL schema design.
@@ -42,6 +44,7 @@ Then invoke the skill you need from your agent:
 - `/dpia` for privacy impact assessment screening and drafting.
 - `/appsec-audit` for authorized source-aware AppSec audits and remediation-ready security reports.
 - `/documentation-maintainer` for auditing, pruning, updating, and creating source-aligned project docs.
+- `/dutch-text-humanizer` for removing AI-writing tells from Dutch-first prose and documents.
 
 ## When to Run What
 
@@ -73,6 +76,16 @@ Coding agents are useful, but they fail in predictable ways:
 - They apply generic patterns where the workload calls for a more specific design.
 
 Skills are a lightweight way to correct those failure modes. Each skill should do one job well, document the workflow clearly, and leave enough room for the engineer to stay in control.
+
+## Skill Compatibility and Budget
+
+Before publishing or installing a new skill, run:
+
+```bash
+python scripts/audit_skills.py
+```
+
+The audit keeps the directory compatible with Claude Code and Codex by requiring simple `SKILL.md` frontmatter, a `name`, a compact `description`, and known Claude Code frontmatter keys only. Descriptions should stay under 180 characters each, with the full repository under 4,000 description characters. Put detailed trigger nuance in the skill body or references, not in frontmatter.
 
 For example, `database-schema-designer` makes the agent start with access patterns, volume, latency targets, retention, and operational constraints before it proposes tables, collections, indexes, partitions, or migrations. `codebase-refactor-architect` makes the agent map god modules, duplicated logic, oversized files, public contracts, and test gaps before proposing incremental behavior-preserving refactors. `complexity-demolition-code-review` makes the agent reject avoidable complexity, fake cleanup, thin wrappers, leaked logic, and oversized handwritten files before they become normal. `performance-cost-audit` makes the agent quantify expensive code paths before recommending batching, caching, query consolidation, or async refactors. `frontend-design-system` makes the agent specify product direction, layout, tokens, component states, accessibility, and implementation details instead of producing generic UI decoration. `documentation-maintainer` makes the agent compare docs against the current codebase before updating, merging, deleting, archiving, or creating documentation. The compliance skills force data mapping, current-source verification, and implementation-ready remediation instead of hand-wavy legal claims. `appsec-audit` keeps security work scoped, source-aware, evidence-driven, and safe.
 
@@ -108,10 +121,13 @@ skills/
     test-suite-architect/
   productivity/
     documentation-maintainer/
+    dutch-text-humanizer/
     release-readiness-gate/
   security/
     access-control-policy-auditor/
     appsec-audit/
+scripts/
+  audit_skills.py
 README.md
 ```
 
@@ -161,6 +177,7 @@ README.md
 ### Productivity
 
 - **[documentation-maintainer](./skills/productivity/documentation-maintainer/SKILL.md)** - Audit project docs against current code and configuration, prune stale or duplicated docs, update canonical docs, create missing operational docs, and report remaining uncertainties.
+- **[dutch-text-humanizer](./skills/productivity/dutch-text-humanizer/SKILL.md)** - Humanize Dutch-first prose and documents by removing AI-writing tells while preserving meaning, structure, facts, layout, and author voice.
 - **[release-readiness-gate](./skills/productivity/release-readiness-gate/SKILL.md)** - Review deploy safety, rollback paths, migrations, feature flags, preview or canary plans, smoke tests, and production-only risk before shipping.
 
 ### Misc

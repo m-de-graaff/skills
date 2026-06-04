@@ -1,6 +1,6 @@
 ---
 name: data-map
-description: Builds a personal-data inventory, data-flow map, and ROPA-style processing record from code, schemas, infrastructure, vendor lists, analytics tools, or product descriptions. Use when the user mentions data inventory, data map, ROPA, processing activities, personal data flows, retention, vendors, logs, databases, analytics, privacy discovery, AI prompts, telemetry, or data lineage.
+description: Map personal data: inventories, ROPA, vendors, retention, logs, databases, privacy flows.
 ---
 
 # Data Map

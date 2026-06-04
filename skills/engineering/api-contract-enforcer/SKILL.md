@@ -1,6 +1,6 @@
 ---
 name: api-contract-enforcer
-description: Reviews API boundaries for REST, tRPC, GraphQL, and webhooks, checking route consistency, OpenAPI coverage, router shape, schema hygiene, request validation, response envelopes, pagination contracts, error format consistency, idempotency, webhook verification, retry behavior, rate-limit behavior, backwards compatibility, and SDK or client generation. Use when reviewing API boundaries or integration surfaces.
+description: Audit API contracts for REST, tRPC, GraphQL, and webhooks: schemas, errors, pagination, idempotency, compatibility.
 ---
 
 # API Contract Enforcer

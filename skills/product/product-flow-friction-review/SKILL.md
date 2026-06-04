@@ -1,6 +1,6 @@
 ---
 name: product-flow-friction-review
-description: Reviews product flows such as signup, onboarding, checkout, ordering, booking, account setup, team invites, subscription upgrade, cancellation, and error recovery for too many steps, unclear calls to action, missing empty states, fake polish, vague error copy, dead ends, excessive modals, repeated forms, unclear pricing or billing states, and broken mobile flow. Use when reviewing UX or product flows for operational clarity.
+description: Review product-flow friction: signup, onboarding, checkout, booking, invites, upgrades, cancellation, errors.
 ---
 
 # Product Flow Friction Review

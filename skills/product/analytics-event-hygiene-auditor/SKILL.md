@@ -1,6 +1,6 @@
 ---
 name: analytics-event-hygiene-auditor
-description: Reviews analytics and tracking for duplicate events, missing funnel events, inconsistent event names, PII leakage, over-tracking, high-cost event volume, analytics in hot render paths, server and client event mismatch, missing attribution fields, and bad revenue or conversion tracking. Use when reviewing product analytics, telemetry, or event schemas.
+description: Audit analytics events: duplicates, funnels, naming, PII leakage, attribution, revenue metrics, volume cost.
 ---
 
 # Analytics Event Hygiene Auditor

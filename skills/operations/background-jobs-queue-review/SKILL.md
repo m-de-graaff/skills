@@ -1,6 +1,6 @@
 ---
 name: background-jobs-queue-review
-description: Reviews queues, cron jobs, workers, and scheduled tasks for retries, idempotency, dead-letter queues, job locking, duplicate execution, race conditions, timeout behavior, queue cost, batch size, memory usage, observability, cron overlap, and backpressure. Use when reviewing worker systems, scheduled jobs, or asynchronous processing.
+description: Review queues, workers, cron: retries, idempotency, locks, DLQs, overlap, backpressure, timeouts, observability.
 ---
 
 # Background Jobs and Queue Review

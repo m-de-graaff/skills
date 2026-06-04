@@ -1,6 +1,6 @@
 ---
 name: test-suite-architect
-description: Reviews and repairs test strategy by finding critical code with no tests, adding characterization tests before risky refactors, detecting brittle tests, removing duplicated test setup, and adding unit, integration, E2E, regression, and smoke tests where appropriate. Use when a repo needs stronger test protection before risky changes.
+description: Improve test strategy: missing coverage, brittle tests, characterization, regressions, suite design.
 ---
 
 # Test Suite Architect

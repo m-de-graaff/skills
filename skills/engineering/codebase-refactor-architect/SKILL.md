@@ -1,6 +1,6 @@
 ---
 name: codebase-refactor-architect
-description: Scans codebases, diffs, modules, and source files for duplicated logic, oversized files, god modules, tangled responsibilities, inefficient structure, dead code, circular dependencies, and maintainability risks; then produces safe behavior-preserving refactor plans, patches, tests, and validation steps. Use when users ask to refactor a codebase, split huge files, break up god modules, remove duplication, simplify components/services/controllers, improve architecture, reduce complexity, find dead code, or make code easier to change without altering behavior.
+description: Plan safe refactors for god modules, duplication, dead code, tangled boundaries, public contracts, and test gaps.
 ---
 
 # Codebase Refactor Architect

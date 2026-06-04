@@ -1,6 +1,6 @@
 ---
 name: runtime-observability-engineer
-description: Reviews production observability for structured logs, error boundaries, request IDs, trace IDs, metrics, slow-query logging, background job visibility, webhook replay logs, alert rules, dashboards, and incident runbooks. Use when auditing debuggability, telemetry, or incident readiness.
+description: Review observability: logs, traces, metrics, request IDs, slow queries, alerts, dashboards, runbooks.
 ---
 
 # Runtime Observability Engineer

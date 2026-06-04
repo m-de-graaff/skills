@@ -1,6 +1,6 @@
 ---
 name: privacy-regime-review
-description: Reviews products, code, data flows, vendors, policies, or incidents against privacy regimes such as GDPR, UK GDPR, CCPA/CPRA, LGPD, PIPEDA, and US state privacy laws. Use when the user mentions GDPR, CCPA, CPRA, privacy compliance, personal data, PII, controller, processor, business, service provider, lawful basis, privacy notice, consent, retention, transfers, data subject rights, consumer rights, or regulatory risk.
+description: Review privacy compliance for GDPR, UK GDPR, CCPA/CPRA, LGPD, PIPEDA, data flows, vendors, code.
 ---
 
 # Privacy Regime Review

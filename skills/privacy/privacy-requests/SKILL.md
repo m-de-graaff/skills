@@ -1,6 +1,6 @@
 ---
 name: privacy-requests
-description: Designs or reviews data subject and consumer privacy request workflows, including access, deletion, correction, portability, objection, opt-out, consent withdrawal, and limits on sensitive data use. Use when the user mentions DSAR, data subject request, privacy request, consumer request, access request, deletion request, erasure, correction, portability, opt-out, consent withdrawal, CCPA/GDPR rights handling, or privacy rights operations.
+description: Design or audit privacy requests: access, deletion, correction, portability, opt-out, objection, consent withdrawal.
 ---
 
 # Privacy Requests

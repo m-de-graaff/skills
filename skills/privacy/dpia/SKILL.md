@@ -1,6 +1,6 @@
 ---
 name: dpia
-description: Screens, drafts, or reviews Data Protection Impact Assessments and similar privacy risk assessments for high-risk personal data processing. Use when the user mentions DPIA, data protection impact assessment, privacy impact assessment, PIA, high-risk processing, profiling, automated decision-making, AI processing, sensitive data, children, surveillance, large-scale monitoring, risk assessment, ADMT, or privacy-by-design review.
+description: Screen, draft, or review DPIAs/PIAs for high-risk processing, profiling, automated decisions, AI, sensitive data, GDPR.
 ---
 
 # DPIA

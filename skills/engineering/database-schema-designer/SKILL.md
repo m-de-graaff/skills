@@ -1,6 +1,6 @@
 ---
 name: database-schema-designer
-description: Design performance-first, workload-aware database schemas for SQL and NoSQL systems. Produces optimized tables or collections, relationships, indexes, constraints, partitioning or sharding plans, migration scripts, ERDs, query examples, and optimization rationale. Use when users need database design, schema optimization, data architecture planning, high-throughput persistence, low-latency query design, migration planning, index selection, partitioning, sharding, or production database review.
+description: Design SQL or NoSQL schemas from workload: tables, collections, indexes, constraints, migrations, tradeoffs.
 ---
 
 # Database Schema Designer

@@ -1,6 +1,6 @@
 ---
 name: performance-cost-audit
-description: Audits codebases, routes, services, jobs, PRs, and snippets for latency and cost waste such as N+1 queries, request waterfalls, duplicate fetches, sequential awaits, over-fetching, excessive provider/API calls, serverless spend, logging volume, and AI token waste. Use when users ask to optimize speed, reduce database queries, cut cloud or SaaS costs, lower AI/API usage, find async bottlenecks, improve hot paths, or create measurable performance refactors.
+description: Audit latency and cost waste: N+1s, waterfalls, batching, caching, APIs, jobs, databases, cloud, providers.
 ---
 
 # Performance Cost Audit

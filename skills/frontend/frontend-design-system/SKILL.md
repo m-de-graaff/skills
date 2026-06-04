@@ -1,6 +1,6 @@
 ---
 name: frontend-design-system
-description: Create polished frontend UI, product interfaces, dashboards, design systems, and implementation-ready React, Next.js, Tailwind, and CSS variable guidance. Use when a user asks for frontend design, UI redesign, component systems, landing pages, dashboards, SaaS apps, admin panels, developer tools, mobile-responsive product screens, light/dark themes, design tokens, visual polish, accessibility review, or avoiding generic AI/vibe-coded aesthetics.
+description: Design product UIs and systems: layouts, tokens, components, dashboards, states, accessibility, QA.
 ---
 
 # Frontend Design System

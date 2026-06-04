@@ -1,6 +1,6 @@
 ---
 name: appsec-audit
-description: Performs authorized, source-aware application security audits for web apps, APIs, SaaS products, codebases, pull requests, configs, dependencies, secrets, IaC, and business logic. Use when users ask to audit a codebase, review a PR for security issues, harden a web app/API, find auth or tenant-isolation bugs, review Supabase RLS or webhooks, turn scanner output into remediation, write a vulnerability report, threat model, or build an AppSec review workflow.
+description: Perform source-aware AppSec audits: auth, injection, secrets, dependencies, configs, business logic, APIs, remediation.
 ---
 
 # AppSec Audit

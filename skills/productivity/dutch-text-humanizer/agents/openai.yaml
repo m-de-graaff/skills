@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dutch Text Humanizer"
+  short_description: "Humanize Dutch-first prose and documents."
+  default_prompt: "Use $dutch-text-humanizer to remove AI-writing tells from this Dutch text or document while preserving meaning, structure, facts, layout, and the author's voice."

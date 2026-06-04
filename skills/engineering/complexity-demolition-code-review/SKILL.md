@@ -1,6 +1,6 @@
 ---
 name: complexity-demolition-code-review
-description: Ruthless code-quality review gate that rejects unnecessary complexity, oversized handwritten files, god modules, thin wrappers, leaked logic, duplicated critical rules, and PRs that work but make the codebase harder to maintain. Use when reviewing a pull request, branch, repository, folder, or file set for maintainability, modularity, complexity, duplication, architectural hygiene, or AI-generated code quality.
+description: Review code complexity: oversized files, god modules, thin wrappers, duplication, leaked logic, weak boundaries.
 ---
 
 # Complexity Demolition Code Review

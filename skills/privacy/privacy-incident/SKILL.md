@@ -1,6 +1,6 @@
 ---
 name: privacy-incident
-description: Handles privacy and personal-data incidents, including suspected breaches, accidental disclosure, unauthorised access, data loss, exfiltration, misdirected emails, exposed logs, vendor incidents, and notification triage. Use when the user mentions breach, data leak, privacy incident, unauthorised access, exposed data, accidental disclosure, exfiltration, lost device, compromised vendor, breach notification, or personal-data exposure.
+description: Triage privacy incidents: breaches, misdirected data, exposed logs, vendor incidents, notification risk.
 ---
 
 # Privacy Incident

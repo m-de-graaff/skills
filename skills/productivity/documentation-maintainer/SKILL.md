@@ -1,6 +1,6 @@
 ---
 name: documentation-maintainer
-description: Maintains project documentation by auditing existing docs against current code, configuration, scripts, infrastructure, tests, CI/CD, API contracts, migrations, and runtime behavior; then recommends or applies keep, update, delete, merge, archive, or create decisions. Use when users ask to review docs, update README, clean docs folders, delete stale documentation, create development/deployment/API/architecture/operations docs, audit docs against a repository or PR, or make documentation accurate for onboarding, release, support, security, or operations.
+description: Audit docs against code and config: README, stale docs, duplicates, missing docs, onboarding accuracy.
 ---
 
 # Documentation Maintainer

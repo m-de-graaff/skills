@@ -1,6 +1,6 @@
 ---
 name: access-control-policy-auditor
-description: Reviews access control policy for roles, permissions, RBAC, ABAC, tenant isolation, Supabase RLS, Postgres policies, admin bypasses, server and client trust boundaries, IDOR or BOLA risk, ownership checks, organization and team membership, invite flows, and billing-plan permissions. Use when auditing authorization flows, tenant safety, or policy enforcement.
+description: Audit authorization: RBAC, ABAC, tenant isolation, RLS, admin bypasses, IDOR/BOLA, invites, billing permissions.
 ---
 
 # Access Control Policy Auditor

@@ -1,6 +1,6 @@
 ---
 name: billing-payments-hardening-review
-description: Reviews billing and payments code for webhook idempotency, duplicate event processing, invoice state transitions, subscription downgrade and upgrade edge cases, failed payment recovery, credits balance logic, usage metering, race conditions, refund logic, plan permission syncing, and test clock or sandbox coverage. Use when reviewing Stripe, subscriptions, credits, invoices, or usage-based billing flows.
+description: Review billing and payments: Stripe, invoices, subscriptions, credits, webhooks, metering, refunds, plan sync.
 ---
 
 # Billing and Payments Hardening Review

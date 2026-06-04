@@ -1,6 +1,6 @@
 ---
 name: environment-config-auditor
-description: Reviews environment and configuration sanity, including .env.example, required versus optional env vars, staging and production parity, secret naming, unused env vars, leaked secrets, duplicated config, feature flags, public or private env var misuse, Next.js NEXT_PUBLIC_ misuse, and local onboarding setup. Use when reviewing runtime configuration, deployment variables, or onboarding docs.
+description: Audit environment config: .env examples, secrets, public env leaks, flags, staging parity, unused vars.
 ---
 
 # Environment Config Auditor

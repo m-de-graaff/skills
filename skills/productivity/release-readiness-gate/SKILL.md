@@ -1,6 +1,6 @@
 ---
 name: release-readiness-gate
-description: Reviews deployment and release safety across CI/CD, Vercel or GitHub Actions or Docker deploy config, database migrations, environment variables, rollback paths, feature flags, release notes, smoke tests, preview deployments, canary rollout plans, and production-only risk. Use when deciding whether a change is safe to ship.
+description: Review release readiness: CI/CD, migrations, env vars, rollback, deploy config, flags, smoke tests, prod risk.
 ---
 
 # Release Readiness Gate
