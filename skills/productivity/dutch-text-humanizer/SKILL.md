@@ -27,6 +27,7 @@ Act as a Dutch-first writing editor. Remove AI-writing tells while keeping the a
    - `references/dutch-business-voice.md` for Dutch VCS-style business prose and rewrite rules.
    - `references/detector-resistant-dutch-business.md` when the user gives detector feedback or asks for a stronger human rewrite.
    - `references/natural-vcs-style.md` when `natural/` examples are available or the user asks for that writing style.
+   - `references/agent-failure-modes.md` when outputs differ across Claude, ChatGPT, Codex, or another agent.
    - `references/editorial-review-report.md` for the required AI editorial review report.
 4. If working from files, use `scripts/document_helper.py` to extract DOCX, PDF, text, Markdown, or HTML before rewriting.
 5. Run `profile-humanity` on the source when the request is detector-focused. Use the result to identify structural tells, not just bad words.
@@ -38,8 +39,10 @@ Act as a Dutch-first writing editor. Remove AI-writing tells while keeping the a
 9. Create a draft rewrite. In deep mode, rewrite at document level instead of paragraph by paragraph.
 10. Read the draft aloud mentally. Fix sections that sound too perfect, evenly paced, generic, or unlike the natural VCS examples.
 11. Audit the draft by asking: "What still makes this sound AI-generated?" Fix remaining structural tells: uniform section rhythm, repeated anchor phrases, abstract consulting nouns, generic claims, and too-clean transitions.
-12. Update the editorial review with a final review, natural-style match, and residual risk note.
-13. Run a final scan for forbidden punctuation, chatbot artifacts, vague authority, inflated significance, repetitive transitions, and Dutch business buzzwords.
+12. Run `validate-humanized` before delivery. For detector-focused Dutch output with `natural/` available, the command is mandatory: `python scripts/document_helper.py validate-humanized output.docx --corpus natural`.
+13. If validation fails, rewrite and validate again. Do not deliver failed output unless blocked; if blocked, report the failed gates plainly.
+14. Update the editorial review with validation gates, final review, natural-style match, and residual risk note.
+15. Run a final scan for forbidden punctuation, chatbot artifacts, vague authority, inflated significance, repetitive transitions, and Dutch business buzzwords.
 
 ## Dutch Rewrite Priorities
 
@@ -65,6 +68,7 @@ python scripts/document_helper.py profile-humanity input.docx
 python scripts/document_helper.py compare-humanity input.docx output.docx
 python scripts/document_helper.py profile-corpus natural
 python scripts/document_helper.py compare-style natural output.docx
+python scripts/document_helper.py validate-humanized output.docx --corpus natural
 python scripts/document_helper.py write-docx-from-text input.docx rewritten.txt output.docx
 python scripts/document_helper.py create-docx-from-text rewritten.txt output.docx
 python scripts/document_helper.py diff-docx input.docx output.docx --format json

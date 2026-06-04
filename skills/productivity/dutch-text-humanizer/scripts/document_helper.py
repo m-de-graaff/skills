@@ -127,6 +127,11 @@ CONSULTING_TERMS = [
     "structureel onderdeel",
     "vertaalslag",
 ]
+DEFAULT_MAX_RISK_SCORE = 10.0
+DEFAULT_MAX_ABSTRACT_DENSITY = 2.0
+DEFAULT_MAX_CONSULTING_DENSITY = 0.25
+DEFAULT_MIN_CONCRETE_DENSITY = 14.0
+DEFAULT_MIN_STYLE_SCORE = 75.0
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")
@@ -1030,6 +1035,106 @@ def print_style_comparison(payload: dict[str, Any]) -> None:
     print_humanity_profile(payload["target"]["profile"])
 
 
+def gate_result(name: str, passed: bool, value: Any, threshold: str) -> dict[str, Any]:
+    return {
+        "name": name,
+        "passed": passed,
+        "value": value,
+        "threshold": threshold,
+    }
+
+
+def validate_humanized_document(
+    target_path: Path,
+    corpus_path: Path | None = None,
+    max_risk_score: float = DEFAULT_MAX_RISK_SCORE,
+    max_abstract_density: float = DEFAULT_MAX_ABSTRACT_DENSITY,
+    max_consulting_density: float = DEFAULT_MAX_CONSULTING_DENSITY,
+    min_concrete_density: float = DEFAULT_MIN_CONCRETE_DENSITY,
+    min_style_score: float = DEFAULT_MIN_STYLE_SCORE,
+) -> dict[str, Any]:
+    items = extract_any(target_path)
+    text = "\n\n".join(str(item["text"]) for item in items)
+    profile = humanity_profile(items)
+    style_payload = style_comparison(corpus_path, target_path) if corpus_path is not None else None
+
+    risk_score = float(profile["risk"]["score"])
+    abstract_density = float(profile["abstract_terms"]["density_per_100_words"])
+    consulting_density = float(profile["consulting_terms"]["density_per_100_words"])
+    concrete_density = float(profile["concrete_anchors"]["density_per_100_words"])
+    text_findings = audit_text(text)
+
+    gates = [
+        gate_result("text audit", not text_findings, text_findings, "no findings"),
+        gate_result("risk score", risk_score <= max_risk_score, risk_score, f"<= {max_risk_score:g}"),
+        gate_result(
+            "abstract density",
+            abstract_density <= max_abstract_density,
+            abstract_density,
+            f"<= {max_abstract_density:g} per 100 words",
+        ),
+        gate_result(
+            "consulting density",
+            consulting_density <= max_consulting_density,
+            consulting_density,
+            f"<= {max_consulting_density:g} per 100 words",
+        ),
+        gate_result(
+            "concrete density",
+            concrete_density >= min_concrete_density,
+            concrete_density,
+            f">= {min_concrete_density:g} per 100 words",
+        ),
+    ]
+
+    if style_payload is not None:
+        style_score = float(style_payload["style_match"]["score"])
+        gates.append(
+            gate_result(
+                "natural style score",
+                style_score >= min_style_score,
+                style_score,
+                f">= {min_style_score:g}",
+            )
+        )
+
+    return {
+        "target": str(target_path),
+        "corpus": str(corpus_path) if corpus_path is not None else None,
+        "passed": all(gate["passed"] for gate in gates),
+        "gates": gates,
+        "profile": profile,
+        "style": style_payload,
+        "thresholds": {
+            "max_risk_score": max_risk_score,
+            "max_abstract_density": max_abstract_density,
+            "max_consulting_density": max_consulting_density,
+            "min_concrete_density": min_concrete_density,
+            "min_style_score": min_style_score,
+        },
+    }
+
+
+def print_validation(payload: dict[str, Any]) -> None:
+    print(f"Validation: {'passed' if payload['passed'] else 'failed'}")
+    print(f"Target: {payload['target']}")
+    if payload.get("corpus"):
+        print(f"Corpus: {payload['corpus']}")
+    print("\nGates:")
+    for gate in payload["gates"]:
+        status = "PASS" if gate["passed"] else "FAIL"
+        print(f"- {status} {gate['name']}: {gate['value']} ({gate['threshold']})")
+    print("\nProfile summary:")
+    profile = payload["profile"]
+    print(f"- risk: {profile['risk']['score']} ({profile['risk']['label']})")
+    print(f"- abstract density: {profile['abstract_terms']['density_per_100_words']} per 100 words")
+    print(f"- consulting density: {profile['consulting_terms']['density_per_100_words']} per 100 words")
+    print(f"- concrete density: {profile['concrete_anchors']['density_per_100_words']} per 100 words")
+    if payload.get("style"):
+        match = payload["style"]["style_match"]
+        print(f"- natural style: {match['score']} ({match['label']})")
+
+
 def command_extract(args: argparse.Namespace) -> None:
     items = extract_any(Path(args.input))
     write_extraction(items, args.format)
@@ -1140,6 +1245,26 @@ def command_compare_style(args: argparse.Namespace) -> None:
         sys.stdout.write("\n")
         return
     print_style_comparison(payload)
+
+
+def command_validate_humanized(args: argparse.Namespace) -> None:
+    corpus = Path(args.corpus) if args.corpus else None
+    payload = validate_humanized_document(
+        target_path=Path(args.input),
+        corpus_path=corpus,
+        max_risk_score=args.max_risk_score,
+        max_abstract_density=args.max_abstract_density,
+        max_consulting_density=args.max_consulting_density,
+        min_concrete_density=args.min_concrete_density,
+        min_style_score=args.min_style_score,
+    )
+    if args.format == "json":
+        json.dump(payload, sys.stdout, ensure_ascii=False, indent=2)
+        sys.stdout.write("\n")
+    else:
+        print_validation(payload)
+    if not payload["passed"]:
+        sys.exit(1)
 
 
 def command_write_docx_from_text(args: argparse.Namespace) -> None:
@@ -1311,6 +1436,19 @@ def build_parser() -> argparse.ArgumentParser:
     style_parser.add_argument("target")
     style_parser.add_argument("--format", choices=["text", "json"], default="text")
     style_parser.set_defaults(func=command_compare_style)
+
+    validate_parser = subparsers.add_parser(
+        "validate-humanized", help="Hard gate for detector-focused Dutch humanized output."
+    )
+    validate_parser.add_argument("input")
+    validate_parser.add_argument("--corpus", help="Optional natural-style corpus folder or file.")
+    validate_parser.add_argument("--format", choices=["text", "json"], default="text")
+    validate_parser.add_argument("--max-risk-score", type=float, default=DEFAULT_MAX_RISK_SCORE)
+    validate_parser.add_argument("--max-abstract-density", type=float, default=DEFAULT_MAX_ABSTRACT_DENSITY)
+    validate_parser.add_argument("--max-consulting-density", type=float, default=DEFAULT_MAX_CONSULTING_DENSITY)
+    validate_parser.add_argument("--min-concrete-density", type=float, default=DEFAULT_MIN_CONCRETE_DENSITY)
+    validate_parser.add_argument("--min-style-score", type=float, default=DEFAULT_MIN_STYLE_SCORE)
+    validate_parser.set_defaults(func=command_validate_humanized)
 
     write_parser = subparsers.add_parser(
         "write-docx-from-text", help="Build a clean DOCX from Markdown-ish rewritten text."

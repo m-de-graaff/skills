@@ -31,6 +31,10 @@ Save the report next to the output file with the same base name and `.review.md`
 
 [Compare the draft or final output with the natural VCS examples. Mention practical detail, burstiness, paragraph variation, roughness, and what still sounds too polished.]
 
+## Validation gates
+
+[List the `validate-humanized` result. Include risk score, abstract density, consulting density, concrete density, natural-style score when available, and any failed gates.]
+
 ## Final review
 
 [After rewriting, state what changed and which original AI signals were reduced.]
@@ -47,4 +51,5 @@ Save the report next to the output file with the same base name and `.review.md`
 - Name the exact structural issue: repeated headings, same paragraph role, repeated abstract anchors, too-clean consulting cadence, vague benefits, weak ownership, or low operational detail.
 - Keep a fact-preservation checklist. This prevents a deep rewrite from becoming a summary or inventing detail.
 - If a natural corpus is available, compare against it explicitly. The goal is practical VCS prose, not generic "human" prose.
+- For detector-focused output, include the hard validation result. If a gate fails, do not hide it behind prose.
 - If the final rewrite still has a risk, say so plainly.
