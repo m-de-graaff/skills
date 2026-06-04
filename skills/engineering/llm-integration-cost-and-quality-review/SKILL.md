@@ -1,6 +1,6 @@
 ---
-name: llm-integration-cost-and-quality-review
-description: Review LLM features for prompt bloat, model choice, token cost, caching, evals, PII, retries, fallbacks, validation.
+name: "llm-integration-cost-and-quality-review"
+description: "Review LLM features for prompt bloat, model choice, token cost, caching, evals, PII, retries, fallbacks, validation."
 ---
 
 # LLM Integration Cost and Quality Review

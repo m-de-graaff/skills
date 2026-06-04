@@ -1,6 +1,6 @@
 ---
-name: cookie-consent-review
-description: Review cookies and tracking: CMPs, pixels, analytics, ads, SDKs, opt-outs, consent, disclosures.
+name: "cookie-consent-review"
+description: "Review cookies and tracking: CMPs, pixels, analytics, ads, SDKs, opt-outs, consent, disclosures."
 ---
 
 # Cookie Consent Review

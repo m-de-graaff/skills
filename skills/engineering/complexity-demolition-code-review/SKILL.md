@@ -1,6 +1,6 @@
 ---
-name: complexity-demolition-code-review
-description: Review code complexity: oversized files, god modules, thin wrappers, duplication, leaked logic, weak boundaries.
+name: "complexity-demolition-code-review"
+description: "Review code complexity: oversized files, god modules, thin wrappers, duplication, leaked logic, weak boundaries."
 ---
 
 # Complexity Demolition Code Review

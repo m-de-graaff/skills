@@ -1,6 +1,6 @@
 ---
-name: api-contract-enforcer
-description: Audit API contracts for REST, tRPC, GraphQL, and webhooks: schemas, errors, pagination, idempotency, compatibility.
+name: "api-contract-enforcer"
+description: "Audit API contracts for REST, tRPC, GraphQL, and webhooks: schemas, errors, pagination, idempotency, compatibility."
 ---
 
 # API Contract Enforcer

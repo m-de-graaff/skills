@@ -1,6 +1,6 @@
 ---
-name: appsec-audit
-description: Perform source-aware AppSec audits: auth, injection, secrets, dependencies, configs, business logic, APIs, remediation.
+name: "appsec-audit"
+description: "Perform source-aware AppSec audits: auth, injection, secrets, dependencies, configs, business logic, APIs, remediation."
 ---
 
 # AppSec Audit

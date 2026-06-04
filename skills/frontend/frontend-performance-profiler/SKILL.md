@@ -1,6 +1,6 @@
 ---
-name: frontend-performance-profiler
-description: Audit frontend speed: Core Web Vitals, hydration, bundles, images, fonts, render cost, Suspense, mobile.
+name: "frontend-performance-profiler"
+description: "Audit frontend speed: Core Web Vitals, hydration, bundles, images, fonts, render cost, Suspense, mobile."
 ---
 
 # Frontend Performance Profiler

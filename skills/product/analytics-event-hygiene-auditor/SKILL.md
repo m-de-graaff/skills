@@ -1,6 +1,6 @@
 ---
-name: analytics-event-hygiene-auditor
-description: Audit analytics events: duplicates, funnels, naming, PII leakage, attribution, revenue metrics, volume cost.
+name: "analytics-event-hygiene-auditor"
+description: "Audit analytics events: duplicates, funnels, naming, PII leakage, attribution, revenue metrics, volume cost."
 ---
 
 # Analytics Event Hygiene Auditor

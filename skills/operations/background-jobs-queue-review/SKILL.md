@@ -1,6 +1,6 @@
 ---
-name: background-jobs-queue-review
-description: Review queues, workers, cron: retries, idempotency, locks, DLQs, overlap, backpressure, timeouts, observability.
+name: "background-jobs-queue-review"
+description: "Review queues, workers, cron: retries, idempotency, locks, DLQs, overlap, backpressure, timeouts, observability."
 ---
 
 # Background Jobs and Queue Review

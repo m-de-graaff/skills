@@ -1,6 +1,6 @@
 ---
-name: product-flow-friction-review
-description: Review product-flow friction: signup, onboarding, checkout, booking, invites, upgrades, cancellation, errors.
+name: "product-flow-friction-review"
+description: "Review product-flow friction: signup, onboarding, checkout, booking, invites, upgrades, cancellation, errors."
 ---
 
 # Product Flow Friction Review

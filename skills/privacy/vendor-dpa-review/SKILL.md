@@ -1,6 +1,6 @@
 ---
-name: vendor-dpa-review
-description: Review vendors and DPAs: processors, subprocessors, SCCs, transfers, deletion, security exhibits, vendor risk.
+name: "vendor-dpa-review"
+description: "Review vendors and DPAs: processors, subprocessors, SCCs, transfers, deletion, security exhibits, vendor risk."
 ---
 
 # Vendor DPA Review

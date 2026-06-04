@@ -1,6 +1,6 @@
 ---
-name: dpia
-description: Screen, draft, or review DPIAs/PIAs for high-risk processing, profiling, automated decisions, AI, sensitive data, GDPR.
+name: "dpia"
+description: "Screen, draft, or review DPIAs/PIAs for high-risk processing, profiling, automated decisions, AI, sensitive data, GDPR."
 ---
 
 # DPIA

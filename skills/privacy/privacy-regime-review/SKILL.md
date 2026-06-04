@@ -1,6 +1,6 @@
 ---
-name: privacy-regime-review
-description: Review privacy compliance for GDPR, UK GDPR, CCPA/CPRA, LGPD, PIPEDA, data flows, vendors, code.
+name: "privacy-regime-review"
+description: "Review privacy compliance for GDPR, UK GDPR, CCPA/CPRA, LGPD, PIPEDA, data flows, vendors, code."
 ---
 
 # Privacy Regime Review

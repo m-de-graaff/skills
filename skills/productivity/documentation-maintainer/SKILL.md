@@ -1,6 +1,6 @@
 ---
-name: documentation-maintainer
-description: Audit docs against code and config: README, stale docs, duplicates, missing docs, onboarding accuracy.
+name: "documentation-maintainer"
+description: "Audit docs against code and config: README, stale docs, duplicates, missing docs, onboarding accuracy."
 ---
 
 # Documentation Maintainer

@@ -1,6 +1,6 @@
 ---
-name: test-suite-architect
-description: Improve test strategy: missing coverage, brittle tests, characterization, regressions, suite design.
+name: "test-suite-architect"
+description: "Improve test strategy: missing coverage, brittle tests, characterization, regressions, suite design."
 ---
 
 # Test Suite Architect

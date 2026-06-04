@@ -1,6 +1,6 @@
 ---
-name: dutch-text-humanizer
-description: Humanize Dutch-first prose and documents: de-AI editing, DOCX/PDF cleanup, business writing, author voice.
+name: "dutch-text-humanizer"
+description: "Humanize Dutch-first prose and documents: de-AI editing, DOCX/PDF cleanup, business writing, author voice."
 ---
 
 # Dutch Text Humanizer

@@ -1,6 +1,6 @@
 ---
-name: privacy-requests
-description: Design or audit privacy requests: access, deletion, correction, portability, opt-out, objection, consent withdrawal.
+name: "privacy-requests"
+description: "Design or audit privacy requests: access, deletion, correction, portability, opt-out, objection, consent withdrawal."
 ---
 
 # Privacy Requests

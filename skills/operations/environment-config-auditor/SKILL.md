@@ -1,6 +1,6 @@
 ---
-name: environment-config-auditor
-description: Audit environment config: .env examples, secrets, public env leaks, flags, staging parity, unused vars.
+name: "environment-config-auditor"
+description: "Audit environment config: .env examples, secrets, public env leaks, flags, staging parity, unused vars."
 ---
 
 # Environment Config Auditor

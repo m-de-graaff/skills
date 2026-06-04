@@ -1,6 +1,6 @@
 ---
-name: billing-payments-hardening-review
-description: Review billing and payments: Stripe, invoices, subscriptions, credits, webhooks, metering, refunds, plan sync.
+name: "billing-payments-hardening-review"
+description: "Review billing and payments: Stripe, invoices, subscriptions, credits, webhooks, metering, refunds, plan sync."
 ---
 
 # Billing and Payments Hardening Review

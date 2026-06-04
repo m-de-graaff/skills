@@ -1,6 +1,6 @@
 ---
-name: codebase-refactor-architect
-description: Plan safe refactors for god modules, duplication, dead code, tangled boundaries, public contracts, and test gaps.
+name: "codebase-refactor-architect"
+description: "Plan safe refactors for god modules, duplication, dead code, tangled boundaries, public contracts, and test gaps."
 ---
 
 # Codebase Refactor Architect

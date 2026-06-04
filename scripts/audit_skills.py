@@ -9,9 +9,15 @@ that should be a deliberate change to this audit script too.
 from __future__ import annotations
 
 import argparse
+import ast
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+
+try:
+    import yaml  # type: ignore
+except ImportError:  # pragma: no cover - fallback keeps the script dependency-light.
+    yaml = None
 
 
 KNOWN_CLAUDE_FRONTMATTER_KEYS = {
@@ -50,6 +56,18 @@ def parse_frontmatter(path: Path) -> SkillFrontmatter:
         raise ValueError("missing YAML frontmatter closer")
 
     frontmatter = text[4:end]
+    if yaml is not None:
+        try:
+            parsed = yaml.safe_load(frontmatter)
+        except Exception as exc:  # noqa: BLE001
+            raise ValueError(f"invalid YAML frontmatter: {exc}") from exc
+        if not isinstance(parsed, dict):
+            raise ValueError("frontmatter must parse to a YAML mapping")
+        return SkillFrontmatter(
+            path=path,
+            fields={str(key): "" if value is None else str(value) for key, value in parsed.items()},
+        )
+
     fields: dict[str, str] = {}
     for line_number, raw_line in enumerate(frontmatter.splitlines(), start=2):
         line = raw_line.strip()
@@ -62,8 +80,19 @@ def parse_frontmatter(path: Path) -> SkillFrontmatter:
         key, value = line.split(":", 1)
         key = key.strip()
         value = value.strip()
+        if ": " in value and not value.startswith(("'", '"')):
+            raise ValueError(
+                f"unquoted YAML value containing ': ' at line {line_number}; quote the value"
+            )
         if not key:
             raise ValueError(f"empty frontmatter key at line {line_number}")
+        if value.startswith('"') and value.endswith('"'):
+            try:
+                value = ast.literal_eval(value)
+            except Exception as exc:  # noqa: BLE001
+                raise ValueError(f"invalid quoted string at line {line_number}: {exc}") from exc
+        elif value.startswith("'") and value.endswith("'"):
+            value = value[1:-1].replace("''", "'")
         fields[key] = value
 
     return SkillFrontmatter(path=path, fields=fields)

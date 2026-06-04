@@ -1,6 +1,6 @@
 ---
-name: database-schema-designer
-description: Design SQL or NoSQL schemas from workload: tables, collections, indexes, constraints, migrations, tradeoffs.
+name: "database-schema-designer"
+description: "Design SQL or NoSQL schemas from workload: tables, collections, indexes, constraints, migrations, tradeoffs."
 ---
 
 # Database Schema Designer

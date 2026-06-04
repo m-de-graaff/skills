@@ -1,6 +1,6 @@
 ---
-name: data-map
-description: Map personal data: inventories, ROPA, vendors, retention, logs, databases, privacy flows.
+name: "data-map"
+description: "Map personal data: inventories, ROPA, vendors, retention, logs, databases, privacy flows."
 ---
 
 # Data Map

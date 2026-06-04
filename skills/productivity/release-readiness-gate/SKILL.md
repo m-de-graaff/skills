@@ -1,6 +1,6 @@
 ---
-name: release-readiness-gate
-description: Review release readiness: CI/CD, migrations, env vars, rollback, deploy config, flags, smoke tests, prod risk.
+name: "release-readiness-gate"
+description: "Review release readiness: CI/CD, migrations, env vars, rollback, deploy config, flags, smoke tests, prod risk."
 ---
 
 # Release Readiness Gate

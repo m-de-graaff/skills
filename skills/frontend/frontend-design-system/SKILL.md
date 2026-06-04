@@ -1,6 +1,6 @@
 ---
-name: frontend-design-system
-description: Design product UIs and systems: layouts, tokens, components, dashboards, states, accessibility, QA.
+name: "frontend-design-system"
+description: "Design product UIs and systems: layouts, tokens, components, dashboards, states, accessibility, QA."
 ---
 
 # Frontend Design System

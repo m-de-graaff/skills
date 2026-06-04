@@ -1,6 +1,6 @@
 ---
-name: performance-cost-audit
-description: Audit latency and cost waste: N+1s, waterfalls, batching, caching, APIs, jobs, databases, cloud, providers.
+name: "performance-cost-audit"
+description: "Audit latency and cost waste: N+1s, waterfalls, batching, caching, APIs, jobs, databases, cloud, providers."
 ---
 
 # Performance Cost Audit

@@ -1,6 +1,6 @@
 ---
-name: privacy-incident
-description: Triage privacy incidents: breaches, misdirected data, exposed logs, vendor incidents, notification risk.
+name: "privacy-incident"
+description: "Triage privacy incidents: breaches, misdirected data, exposed logs, vendor incidents, notification risk."
 ---
 
 # Privacy Incident

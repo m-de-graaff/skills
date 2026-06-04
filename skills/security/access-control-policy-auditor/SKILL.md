@@ -1,6 +1,6 @@
 ---
-name: access-control-policy-auditor
-description: Audit authorization: RBAC, ABAC, tenant isolation, RLS, admin bypasses, IDOR/BOLA, invites, billing permissions.
+name: "access-control-policy-auditor"
+description: "Audit authorization: RBAC, ABAC, tenant isolation, RLS, admin bypasses, IDOR/BOLA, invites, billing permissions."
 ---
 
 # Access Control Policy Auditor

@@ -1,6 +1,6 @@
 ---
-name: runtime-observability-engineer
-description: Review observability: logs, traces, metrics, request IDs, slow queries, alerts, dashboards, runbooks.
+name: "runtime-observability-engineer"
+description: "Review observability: logs, traces, metrics, request IDs, slow queries, alerts, dashboards, runbooks."
 ---
 
 # Runtime Observability Engineer
