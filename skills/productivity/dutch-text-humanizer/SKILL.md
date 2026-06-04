@@ -26,17 +26,20 @@ Act as a Dutch-first writing editor. Remove AI-writing tells while keeping the a
    - `references/ai-writing-patterns.md` for AI tells and Dutch equivalents.
    - `references/dutch-business-voice.md` for Dutch VCS-style business prose and rewrite rules.
    - `references/detector-resistant-dutch-business.md` when the user gives detector feedback or asks for a stronger human rewrite.
+   - `references/natural-vcs-style.md` when `natural/` examples are available or the user asks for that writing style.
    - `references/editorial-review-report.md` for the required AI editorial review report.
 4. If working from files, use `scripts/document_helper.py` to extract DOCX, PDF, text, Markdown, or HTML before rewriting.
 5. Run `profile-humanity` on the source when the request is detector-focused. Use the result to identify structural tells, not just bad words.
-6. For detector-focused work, write an AI editorial review before drafting. The review must explain in human editorial terms why the source sounds AI-written, which facts must be preserved, and how the rewrite will change the structure and voice. Scripts can support this review; they cannot replace it.
-7. Choose the rewrite mode:
+6. When a natural-style corpus is available, run `profile-corpus natural` and `compare-style natural draft-or-output.docx`. Use this as calibration, not as an automatic rewrite.
+7. For detector-focused work, write an AI editorial review before drafting. The review must explain in human editorial terms why the source sounds AI-written, which facts must be preserved, how the natural VCS style differs, and how the rewrite will change the structure and voice. Scripts can support this review; they cannot replace it.
+8. Choose the rewrite mode:
    - Deep rewrite: default for detector feedback. Merge, split, shorten, and reorder sections when the original structure is part of the problem.
    - Layout-preserving rewrite: use for contracts, tenders, legal text, strict templates, or when the user asks to keep the structure.
-8. Create a draft rewrite. In deep mode, rewrite at document level instead of paragraph by paragraph.
-9. Audit the draft by asking: "What still makes this sound AI-generated?" Fix remaining structural tells: uniform section rhythm, repeated anchor phrases, abstract consulting nouns, generic claims, and too-clean transitions.
-10. Update the editorial review with a final review and residual risk note.
-11. Run a final scan for forbidden punctuation, chatbot artifacts, vague authority, inflated significance, repetitive transitions, and Dutch business buzzwords.
+9. Create a draft rewrite. In deep mode, rewrite at document level instead of paragraph by paragraph.
+10. Read the draft aloud mentally. Fix sections that sound too perfect, evenly paced, generic, or unlike the natural VCS examples.
+11. Audit the draft by asking: "What still makes this sound AI-generated?" Fix remaining structural tells: uniform section rhythm, repeated anchor phrases, abstract consulting nouns, generic claims, and too-clean transitions.
+12. Update the editorial review with a final review, natural-style match, and residual risk note.
+13. Run a final scan for forbidden punctuation, chatbot artifacts, vague authority, inflated significance, repetitive transitions, and Dutch business buzzwords.
 
 ## Dutch Rewrite Priorities
 
@@ -46,6 +49,7 @@ Act as a Dutch-first writing editor. Remove AI-writing tells while keeping the a
 - Keep named products, certifications, clients, legal terms, and technical terms unchanged unless the source clearly uses a Dutch equivalent.
 - Where the input is vague, either make it specific from available evidence or leave it sober. Do not add plausible detail.
 - For Dutch business strategy, replace repeated slogans with decisions, constraints, tradeoffs, ownership, financial rules, or operational consequences that already exist in the source.
+- Increase natural variation without faking incompetence: vary sentence length, paragraph length, openings, and level of detail. Use rougher operational phrasing when the natural VCS examples do that, but do not add deliberate typos.
 - For Word documents, preserve layout only when layout fidelity matters. For detector-focused work, rebuild a cleaner DOCX after the document-level rewrite.
 
 ## Helper Commands
@@ -59,7 +63,10 @@ python scripts/document_helper.py audit input.docx
 python scripts/document_helper.py audit-docx output.docx --source input.docx
 python scripts/document_helper.py profile-humanity input.docx
 python scripts/document_helper.py compare-humanity input.docx output.docx
+python scripts/document_helper.py profile-corpus natural
+python scripts/document_helper.py compare-style natural output.docx
 python scripts/document_helper.py write-docx-from-text input.docx rewritten.txt output.docx
+python scripts/document_helper.py create-docx-from-text rewritten.txt output.docx
 python scripts/document_helper.py diff-docx input.docx output.docx --format json
 python scripts/document_helper.py visualize-docx output.docx --output-dir render-out
 ```

@@ -849,14 +849,14 @@ def add_docx_block(doc: Any, block: str, block_index: int) -> None:
         paragraph.add_run(line.strip())
 
 
-def write_rebuilt_docx(source: Path, text: str, output: Path) -> None:
+def write_rebuilt_docx(source: Path | None, text: str, output: Path) -> None:
     try:
         import docx  # type: ignore
         from docx.shared import Cm, Pt  # type: ignore
     except ImportError as exc:  # pragma: no cover - depends on local environment.
         raise RuntimeError("write-docx-from-text requires python-docx.") from exc
 
-    if source.suffix.lower() != ".docx":
+    if source is not None and source.suffix.lower() != ".docx":
         raise RuntimeError("Source must be a DOCX file.")
 
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -884,11 +884,150 @@ def write_rebuilt_docx(source: Path, text: str, output: Path) -> None:
     for index, block in enumerate(blocks):
         add_docx_block(doc, block, index)
 
-    doc.core_properties.comments = f"Rebuilt from {source.name} by dutch-text-humanizer."
+    if source is not None:
+        doc.core_properties.comments = f"Rebuilt from {source.name} by dutch-text-humanizer."
+    else:
+        doc.core_properties.comments = "Created by dutch-text-humanizer."
     doc.save(str(output))
     failures, _warnings = validate_docx_package(output, source=None, fail_on_text=False)
     if failures:
         raise RuntimeError("DOCX package validation failed after rebuild: " + "; ".join(failures))
+
+
+def supported_corpus_files(path: Path) -> list[Path]:
+    supported = {".docx", ".pdf", ".txt", ".md", ".markdown", ".html", ".htm"}
+    if path.is_file():
+        if path.suffix.lower() not in supported:
+            raise RuntimeError(f"Unsupported corpus file type: {path.suffix}")
+        return [path]
+    if not path.is_dir():
+        raise RuntimeError(f"Corpus path not found: {path}")
+    files = [
+        item
+        for item in sorted(path.rglob("*"))
+        if item.is_file()
+        and item.suffix.lower() in supported
+        and not item.name.startswith("~$")
+    ]
+    if not files:
+        raise RuntimeError(f"No supported corpus files found in {path}")
+    return files
+
+
+def profile_corpus(path: Path) -> dict[str, Any]:
+    files = supported_corpus_files(path)
+    aggregate_items: list[dict[str, Any]] = []
+    file_profiles: list[dict[str, Any]] = []
+    for file_path in files:
+        items = extract_any(file_path)
+        profile = humanity_profile(items)
+        file_profiles.append(
+            {
+                "path": str(file_path),
+                "profile": profile,
+            }
+        )
+        for item in items:
+            aggregate_items.append(
+                {
+                    "id": f"{file_path.name}:{item['id']}",
+                    "part": item.get("part", str(file_path)),
+                    "index": item.get("index", 0),
+                    "text": item["text"],
+                }
+            )
+    return {
+        "path": str(path),
+        "file_count": len(files),
+        "aggregate": humanity_profile(aggregate_items),
+        "files": file_profiles,
+    }
+
+
+def profile_metric_summary(profile: dict[str, Any]) -> dict[str, float]:
+    return {
+        "risk_score": float(profile["risk"]["score"]),
+        "abstract_density": float(profile["abstract_terms"]["density_per_100_words"]),
+        "consulting_density": float(profile["consulting_terms"]["density_per_100_words"]),
+        "concrete_density": float(profile["concrete_anchors"]["density_per_100_words"]),
+        "paragraph_cv": float(profile["paragraph_words"]["coefficient_of_variation"]),
+        "sentence_cv": float(profile["sentence_words"]["coefficient_of_variation"]),
+        "heading_body_ratio": float(profile["structure"]["heading_body_ratio"]),
+        "significant_repeated_bigrams": float(profile["repetition"]["significant_bigram_count"]),
+    }
+
+
+def style_comparison(corpus_path: Path, target_path: Path) -> dict[str, Any]:
+    corpus = profile_corpus(corpus_path)
+    target = humanity_profile(extract_any(target_path))
+    corpus_metrics = profile_metric_summary(corpus["aggregate"])
+    target_metrics = profile_metric_summary(target)
+    deltas = {
+        key: round(target_metrics[key] - corpus_metrics[key], 2)
+        for key in corpus_metrics
+    }
+    penalties = [
+        min(1.0, max(0.0, deltas["abstract_density"]) / 3),
+        min(1.0, max(0.0, deltas["consulting_density"]) / 1),
+        min(1.0, max(0.0, -deltas["concrete_density"]) / 8),
+        min(1.0, max(0.0, -deltas["paragraph_cv"]) / 2),
+        min(1.0, max(0.0, -deltas["sentence_cv"]) / 1),
+        min(1.0, max(0.0, deltas["heading_body_ratio"]) / 0.6),
+        min(1.0, max(0.0, deltas["significant_repeated_bigrams"]) / 5),
+    ]
+    distance = round(sum(penalties) / len(penalties) * 100, 1)
+    match_score = round(max(0.0, 100 - distance), 1)
+    if match_score >= 75:
+        label = "strong natural-style match"
+    elif match_score >= 50:
+        label = "partial natural-style match"
+    else:
+        label = "weak natural-style match"
+    return {
+        "corpus": corpus,
+        "target": {
+            "path": str(target_path),
+            "profile": target,
+        },
+        "metrics": {
+            "corpus": corpus_metrics,
+            "target": target_metrics,
+            "delta": deltas,
+        },
+        "style_match": {
+            "score": match_score,
+            "distance": distance,
+            "label": label,
+        },
+    }
+
+
+def print_corpus_profile(payload: dict[str, Any]) -> None:
+    print(f"Corpus: {payload['path']}")
+    print(f"Files: {payload['file_count']}")
+    print("\nAggregate:")
+    print_humanity_profile(payload["aggregate"])
+    print("\nFiles:")
+    for row in payload["files"]:
+        profile = row["profile"]
+        print(
+            f"- {Path(row['path']).name}: "
+            f"{profile['counts']['words']} words, "
+            f"risk {profile['risk']['score']}, "
+            f"abstract {profile['abstract_terms']['density_per_100_words']} per 100, "
+            f"paragraph CV {profile['paragraph_words']['coefficient_of_variation']}"
+        )
+
+
+def print_style_comparison(payload: dict[str, Any]) -> None:
+    match = payload["style_match"]
+    print(f"Style match: {match['score']} ({match['label']})")
+    print(f"Distance: {match['distance']}")
+    print("\nMetric deltas (target - corpus):")
+    for key, value in payload["metrics"]["delta"].items():
+        print(f"- {key}: {value:+}")
+    print("\nTarget profile:")
+    print_humanity_profile(payload["target"]["profile"])
 
 
 def command_extract(args: argparse.Namespace) -> None:
@@ -985,10 +1124,34 @@ def command_compare_humanity(args: argparse.Namespace) -> None:
         print(f"- {key}: {value:+}")
 
 
+def command_profile_corpus(args: argparse.Namespace) -> None:
+    payload = profile_corpus(Path(args.corpus))
+    if args.format == "json":
+        json.dump(payload, sys.stdout, ensure_ascii=False, indent=2)
+        sys.stdout.write("\n")
+        return
+    print_corpus_profile(payload)
+
+
+def command_compare_style(args: argparse.Namespace) -> None:
+    payload = style_comparison(Path(args.corpus), Path(args.target))
+    if args.format == "json":
+        json.dump(payload, sys.stdout, ensure_ascii=False, indent=2)
+        sys.stdout.write("\n")
+        return
+    print_style_comparison(payload)
+
+
 def command_write_docx_from_text(args: argparse.Namespace) -> None:
     text = read_rewrite_text(args.text)
     write_rebuilt_docx(Path(args.source), text, Path(args.output))
     print(f"Wrote rebuilt DOCX to {args.output}")
+
+
+def command_create_docx_from_text(args: argparse.Namespace) -> None:
+    text = read_rewrite_text(args.text)
+    write_rebuilt_docx(None, text, Path(args.output))
+    print(f"Wrote DOCX to {args.output}")
 
 
 def command_diff_docx(args: argparse.Namespace) -> None:
@@ -1134,6 +1297,21 @@ def build_parser() -> argparse.ArgumentParser:
     compare_parser.add_argument("--format", choices=["text", "json"], default="text")
     compare_parser.set_defaults(func=command_compare_humanity)
 
+    corpus_parser = subparsers.add_parser(
+        "profile-corpus", help="Profile a folder or file corpus for natural-style calibration."
+    )
+    corpus_parser.add_argument("corpus")
+    corpus_parser.add_argument("--format", choices=["text", "json"], default="text")
+    corpus_parser.set_defaults(func=command_profile_corpus)
+
+    style_parser = subparsers.add_parser(
+        "compare-style", help="Compare a document against a natural-style corpus."
+    )
+    style_parser.add_argument("corpus")
+    style_parser.add_argument("target")
+    style_parser.add_argument("--format", choices=["text", "json"], default="text")
+    style_parser.set_defaults(func=command_compare_style)
+
     write_parser = subparsers.add_parser(
         "write-docx-from-text", help="Build a clean DOCX from Markdown-ish rewritten text."
     )
@@ -1141,6 +1319,13 @@ def build_parser() -> argparse.ArgumentParser:
     write_parser.add_argument("text", help="Text file to write, or '-' to read from stdin.")
     write_parser.add_argument("output")
     write_parser.set_defaults(func=command_write_docx_from_text)
+
+    create_parser = subparsers.add_parser(
+        "create-docx-from-text", help="Build a clean DOCX from Markdown-ish rewritten text without a source DOCX."
+    )
+    create_parser.add_argument("text", help="Text file to write, or '-' to read from stdin.")
+    create_parser.add_argument("output")
+    create_parser.set_defaults(func=command_create_docx_from_text)
 
     diff_docx_parser = subparsers.add_parser("diff-docx", help="Compare non-empty DOCX paragraphs by ID.")
     diff_docx_parser.add_argument("source")
